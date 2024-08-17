@@ -1,8 +1,9 @@
 import React from 'react';
+import Header from "../components/header";
 
 function TypeNow() {
     return (
-        <div>TypeNow</div>
+        <Header title={"TypeNow"}></Header>
     );
 }
 
