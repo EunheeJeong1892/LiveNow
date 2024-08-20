@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from "../css/common.module.css";
 
 type TitleType = "TypeNow" | "LiveNow" | "ReadNow";
@@ -7,26 +7,18 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ title }) => {
-    let logoSrc: string;
-
-    switch (title) {
-        case "TypeNow":
-            logoSrc = "logo_typeNow.svg"
-            break;
-        case "LiveNow":
-            logoSrc = "logo_liveNow.svg"
-            break;
-        case "ReadNow":
-            logoSrc = "logo_readNow.svg"
-            break;
-        default:
-            logoSrc = "";
-    }
     const [isOpen, setIsOpen] = useState(false);
-
+    const [currentMenu, setCurrentMenu] = useState('TypeNow');
+    const menus = [
+        { id: 'TypeNow', src: 'logo_typeNow.svg' },
+        { id: 'LiveNow', src: 'logo_liveNow.svg' },
+        { id: 'ReadNow', src: 'logo_readNow.svg' },
+    ];
     const handleClick = () => {
         setIsOpen(!isOpen);
     };
+
+
 
     return (
         <header className={styles.header}>
@@ -35,8 +27,25 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
                 onClick={handleClick}
             >
                 <div className={styles.menuIcon}></div>
-        </div>
-    <img src={logoSrc} alt={`${title} logo`}/>
+            </div>
+            {isOpen && (
+                <div>
+                    {menus
+                        .filter(menu => menu.id !== currentMenu)
+                        .map(menu => (
+                            <img key={menu.id} src={menu.src} alt={menu.id} />
+                        ))}
+                </div>
+            )}
+            {!isOpen && (
+                <div>
+                    {menus
+                        .filter(menu => menu.id === currentMenu)
+                        .map(menu => (
+                            <img key={menu.id} src={menu.src} alt={menu.id} />
+                        ))}
+                </div>
+            )}
 </header>
 )
     ;

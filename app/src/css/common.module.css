@@ -75,3 +75,20 @@
   bottom:0;
   background-color: #000;
 }
+
+.typeNowContainer{
+  margin:0px 80px;
+}
+.typeNowContainer .input {
+  padding-left:19px;
+  color: #AFAFAF;
+  font-family: "Noto Sans CJK KR";
+  font-size: 73px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  letter-spacing: -2.19px;
+  border: none;
+  outline: none;
+
+}
