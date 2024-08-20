@@ -1,14 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import Header from "../components/header";
 import styles from "../css/common.module.css";
+import {Helmet} from "react-helmet-async";
+import {QUESTIONS} from "../constants/constants";
 function TypeNow() {
-    const placeholders = [
-            '오늘의 날씨는 어떤가요?',
-            '가장 최근에 심장이 빠르게 뛰었던 일을 알려주세요.',
-            '이번 계절에 기대하고 있는 일이 있나요?',
-            '좋아하는 노래 가사나 문장을 알려주세요.',
-            '오늘 어떤 일을 했나요? 혹은 할 건가요?'
-    ];
+    const placeholders = QUESTIONS.map(o => o.message)
 
     const [placeholder, setPlaceholder] = useState('');
 
@@ -21,7 +17,10 @@ function TypeNow() {
 
     return (
         <>
-        <Header title={"TypeNow"}></Header>
+        <Helmet>
+            <title>Type Now</title>
+        </Helmet>
+        <Header title={"typeNow"}></Header>
         <div className={styles.typeNowContainer}>
             <input className={styles.input} placeholder={placeholder}/>
         </div>

@@ -5,9 +5,11 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import TypeNow from "./pages/typeNow";
 import LiveNow from "./pages/liveNow";
 import ReadNow from "./pages/readNow";
+import {HelmetProvider} from "react-helmet-async";
 
 function App() {
   return (
+      <HelmetProvider>
       <BrowserRouter>
         <Routes>
             <Route path="/typeNow" element={<TypeNow />} />
@@ -15,6 +17,7 @@ function App() {
             <Route path="/readNow" element={<ReadNow />} />
         </Routes>
       </BrowserRouter>
+      </HelmetProvider>
   );
 }
 
