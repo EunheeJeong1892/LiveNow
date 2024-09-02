@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import styles from "../css/common.module.css";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {HeaderProps} from "../types/types";
+
 
 const Header: React.FC<HeaderProps> = ({ title }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -11,23 +12,32 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
         { id: 'liveNow', src: 'logo_liveNow.svg' },
         { id: 'readNow', src: 'logo_readNow.svg' },
     ];
-    const handleClick = () => {
+    const handleHamburgerMenu = () => {
         setIsOpen(!isOpen);
     };
 
+    const handleMenu = (menuId:string) => {
+        setCurrentMenu(menuId)
+    }
     const location = useLocation();
-
+    const navigate = useNavigate(); // useNavigate 훅 사용
     useEffect(() => {
-        // URL 경로에서 currentMenu 값을 추출
         const path = location.pathname.substring(1); // 첫 번째 '/'를 제거하고 경로를 가져옴
         setCurrentMenu(path);
     }, [location]);
+
+    useEffect(() => {
+        if (currentMenu) {
+            navigate(`/${currentMenu}`);
+        }
+    }, [currentMenu, navigate]);
+
 
     return (
         <header className={styles.header}>
             <div
                 className={`${styles.menuWrapper} ${isOpen ? styles.open : ''}`}
-                onClick={handleClick}
+                onClick={handleHamburgerMenu}
             >
                 <div className={styles.menuIcon}></div>
             </div>
@@ -36,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
                     {menus
                         .filter(menu => menu.id !== currentMenu)
                         .map(menu => (
-                            <img key={menu.id} src={menu.src} alt={menu.id} />
+                            <img onClick={() => handleMenu(menu.id)} key={menu.id} src={menu.src} alt={menu.id} />
                         ))}
                 </div>
             )}

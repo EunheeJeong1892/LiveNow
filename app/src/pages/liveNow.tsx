@@ -1,8 +1,9 @@
 import React from 'react';
+import styles from "../css/common.module.css";
 
 function LiveNow() {
     return (
-        <div>LiveNow</div>
+        <div className={styles.fullscreenContainer}></div>
     );
 }
 
