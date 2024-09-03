@@ -4,6 +4,8 @@ export interface ReadCardProps {
     questionId : number;
     message : string;
     regDate : string;
+    onClick: () => void;
+    isSelected: boolean;
 }
 
 

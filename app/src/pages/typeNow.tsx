@@ -77,7 +77,9 @@ function TypeNow() {
             const regex = new RegExp(`(${word})`, "g");
             formattedText = formattedText.replace(
                 regex,
-                '<span class="highlight">$1</span>'
+                '<span style="    text-decoration: underline;    text-decoration-thickness: 2px;\n' +
+                '    text-underline-position: under;\n' +
+                '    text-decoration-color: #00D364;">$1</span>'
             );
             console.log("-")
             console.log(formattedText)
@@ -136,7 +138,7 @@ function TypeNow() {
 
     return (
         <>
-            {showOutcome && <Outcome images={imagesToShow} message={editableHtml} />} {/* Outcome 컴포넌트를 동적으로 렌더링 */}
+            {showOutcome && <Outcome images={imagesToShow} message={inputText} />} {/* Outcome 컴포넌트를 동적으로 렌더링 */}
         <Helmet>
             <title>Type Now</title>
         </Helmet>
@@ -157,7 +159,7 @@ function TypeNow() {
                     }}
                     ref={editableDiv}
                     onKeyDown={handleKeyDown}
-                    data-placeholder={placeholder}
+                    data-placeholder={`${placeholder}`}
                 ></div>
                 <div className="popup" id="popup">
                     {popupImages.map((image, index) => (

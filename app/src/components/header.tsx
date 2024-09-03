@@ -6,7 +6,7 @@ import {HeaderProps} from "../types/types";
 
 const Header: React.FC<HeaderProps> = ({ title }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [currentMenu, setCurrentMenu] = useState('typeNow');
+    const [currentMenu, setCurrentMenu] = useState('');
     const menus = [
         { id: 'typeNow', src: 'logo_typeNow.svg' },
         { id: 'liveNow', src: 'logo_liveNow.svg' },
@@ -46,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
                     {menus
                         .filter(menu => menu.id !== currentMenu)
                         .map(menu => (
-                            <img onClick={() => handleMenu(menu.id)} key={menu.id} src={menu.src} alt={menu.id} />
+                            <img onClick={() => handleMenu(menu.id)} key={menu.id} src={menu.src} alt={menu.id} className={styles.menuLogo} />
                         ))}
                 </div>
             )}
@@ -55,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
                     {menus
                         .filter(menu => menu.id === currentMenu)
                         .map(menu => (
-                            <img key={menu.id} src={menu.src} alt={menu.id} />
+                            <img key={menu.id} src={menu.src} alt={menu.id} className={styles.menuLogo}/>
                         ))}
                 </div>
             )}

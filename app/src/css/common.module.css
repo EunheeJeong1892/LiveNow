@@ -5,7 +5,9 @@
     align-items: center;
     gap: 20px;
     background: linear-gradient(180deg, #FFF 0%, #FFF 85%, rgba(255, 255, 255, 0.00) 100%);
-  position: relative;
+  position: sticky;
+  width: 100%;
+  top: 0px;
 }
 
 .header-logo{
@@ -30,6 +32,7 @@
 
 }
 
+
 .menuWrapper{
   width: 38px;
   height: 38px;
@@ -41,6 +44,7 @@
 }
 .menuWrapper.open .menuIcon::before{
   transform: rotateZ(135deg) scaleX(1.25) translate(13px, -13px);
+  top:0px;
 }
 
 .menuWrapper.open .menuIcon::after{
@@ -76,6 +80,10 @@
   background-color: #000;
 }
 
+.menuLogo {
+  cursor:pointer;
+}
+
 .typeNowContainer{
   margin:0px 80px;
 }
@@ -96,8 +104,9 @@
   text-decoration-thickness: from-font;
 }
 .typeNowContainer [contenteditable="true"]:empty:before {
-  content: attr(placeholder);
-  color: gray;
+  content: attr(data-placeholder);
+  color: #AFAFAF;
+  padding-left:19px;
 }
 
 .popupImage {
@@ -148,6 +157,17 @@
   letter-spacing: -0.9px;
 }
 
+.readCardSelected{
+  background: #F4FFF1 !important;
+
+}
+.readCardBodySelected{
+  font-size: 48px !important;;
+  font-style: normal !important;;
+  font-weight: 300 !important;;
+  line-height: 76px !important;; /* 158.333% */
+  letter-spacing: -1.44px !important;;
+}
 .readCardQuestion {
   display: flex;
   padding: 12px 16px 10px 6px;
