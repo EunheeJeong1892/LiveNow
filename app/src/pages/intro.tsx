@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {Helmet} from "react-helmet-async";
 
 function Intro() {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -25,6 +26,10 @@ function Intro() {
     }, [navigate]);
 
     return (
+        <>
+            <Helmet>
+                <title>Type Now</title>
+            </Helmet>
         <div style={{ height: '100vh', width: '100vw', overflow: 'hidden' }}>
             <video
                 ref={videoRef}
@@ -34,6 +39,7 @@ function Intro() {
                 controls
             />
         </div>
+</>
     );
 }
 
