@@ -24,8 +24,7 @@ function ReadNow() {
 
             if (response.ok) {
                 const result = await response.json();
-                // registDate를 기준으로 내림차순 정렬
-                const sortedCards = result.sort((a: any, b: any) => new Date(b.registDate).getTime() - new Date(a.registDate).getTime());
+                const sortedCards = result.sort((a: any, b: any) => new Date(a.registDate).getTime() - new Date(b.registDate).getTime());
                 setCards(sortedCards);
             } else {
                 console.error('Error fetching data:', response.statusText);
@@ -33,7 +32,7 @@ function ReadNow() {
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
-            setLoading(false); // 데이터 로딩 완료
+            setLoading(false);
         }
     };
 
@@ -45,16 +44,17 @@ function ReadNow() {
     useEffect(() => {
         fetchData()
     }, [],);
-
     useEffect(() => {
         if (!loading && listContainerRef.current) {
-            // 데이터가 로드되고 로딩이 끝난 후, 스크롤을 최하단으로 이동
-            listContainerRef.current.scrollTop = listContainerRef.current.scrollHeight;
+            listContainerRef.current.scrollTo({
+                top: listContainerRef.current.scrollHeight,
+                behavior: 'smooth' // 스크롤 애니메이션을 부드럽게 합니다.
+            });
         }
-    }, [loading, cards]);
+    }, []);
 
     return (
-        <>
+        <div ref={listContainerRef}>
             <Header title={"readNow"} />
             <Helmet>
                 <title>Read Now</title>
@@ -73,7 +73,7 @@ function ReadNow() {
                     );
                 })}
             </div>
-        </>
+        </div>
     );
 }
 

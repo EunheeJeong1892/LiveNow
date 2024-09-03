@@ -31,7 +31,7 @@ function Intro() {
                 src="https://typenow.s3.ap-northeast-2.amazonaws.com/public/main01.mp4" // 동영상 파일 URL
                 style={{ height: '100%', width: '100%', objectFit: 'cover' }}
                 playsInline
-                muted
+                controls
             />
         </div>
     );

@@ -26,7 +26,7 @@ const Outcome: React.FC<OutcomeProps> = ({ message, images }) => {
                 }
                 return nextIndex;
             });
-        }, 3000); // 3초마다 이미지 변경
+        }, 30000); // 3초마다 이미지 변경
 
         return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 클리어
     }, [images, navigate, sliderEnded]); // images, navigate, sliderEnded에 의존
