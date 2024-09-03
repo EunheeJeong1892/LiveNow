@@ -14,7 +14,7 @@ const Outcome: React.FC<OutcomeProps> = ({ message, images }) => {
     useEffect(() => {
         if (images.length === 0) return; // 이미지가 없으면 아무 것도 하지 않음
         if (sliderEnded) {
-            navigate('/readNow'); // 슬라이더가 끝난 후 이동
+            navigate(0); // 슬라이더가 끝난 후 이동
             return;
         }
 
