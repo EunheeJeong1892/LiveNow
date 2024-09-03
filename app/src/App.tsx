@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes, Navigate} from "react-router-dom";
 
 import TypeNow from "./pages/typeNow";
 import LiveNow from "./pages/liveNow";
@@ -14,6 +14,7 @@ function App() {
       <HelmetProvider>
       <BrowserRouter>
         <Routes>
+            <Route path="/" element={<Navigate to="/intro" />} />
             <Route path="/intro" element={<Intro />} />
             <Route path="/typeNow" element={<TypeNow />} />
             <Route path="/liveNow" element={<LiveNow />} />
