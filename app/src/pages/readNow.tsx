@@ -5,53 +5,29 @@ import {ReadCardProps} from "../types/types";
 import ReadCard from "../components/readCard";
 import {Helmet} from "react-helmet-async";
 import {QUESTIONS} from "../constants/constants";
+import {useRecoilValue} from "recoil";
+import {answersAtom} from "../atoms";
 function ReadNow() {
-    const [cards, setCards] = useState<any[]>([]);
-    const [loading, setLoading] = useState<boolean>(true); // 로딩 상태 추가
+    //const [cards, setCards] = useState<any[]>([]);
     const listContainerRef = useRef<HTMLDivElement>(null); // 스크롤을 조정할 컨테이너 참조
+    const [hasScrolled, setHasScrolled] = useState(false); // 첫 실행 여부 저장
 
     const [selectedCardId, setSelectedCardId] = useState<number | null>(null); // 추가된 상태
-
-    const fetchData = async () => {
-        setLoading(true); // 데이터 로딩 시작
-        try {
-            const response = await fetch('https://tqx65zlmb5.execute-api.ap-northeast-2.amazonaws.com/Answers', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                const sortedCards = result.sort((a: any, b: any) => new Date(a.registDate).getTime() - new Date(b.registDate).getTime());
-                setCards(sortedCards);
-            } else {
-                console.error('Error fetching data:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const cards = useRecoilValue(answersAtom);
 
     // 카드 클릭 핸들러
     const handleCardClick = (id: number) => {
         setSelectedCardId(id); // 클릭된 카드의 ID를 상태로 설정
     };
 
+
     useEffect(() => {
-        fetchData()
-    }, [],);
-    useEffect(() => {
-        if (!loading && listContainerRef.current) {
-            listContainerRef.current.scrollTo({
-                top: listContainerRef.current.scrollHeight,
-                behavior: 'smooth' // 스크롤 애니메이션을 부드럽게 합니다.
-            });
+        if (cards.length > 0 && !hasScrolled) {
+            window.scrollTo({ top: document.body.scrollHeight});
+            handleCardClick(cards.length - 1)
+            setHasScrolled(true); // 한 번 스크롤 후 true로 변경하여 다시 실행되지 않도록
         }
-    }, []);
+    }, [cards,hasScrolled,  handleCardClick]);
 
     return (
         <div ref={listContainerRef}>

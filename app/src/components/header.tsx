@@ -8,9 +8,9 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentMenu, setCurrentMenu] = useState('');
     const menus = [
-        { id: 'typeNow', src: 'logo_typeNow.svg' },
-        { id: 'liveNow', src: 'logo_liveNow.svg' },
-        { id: 'readNow', src: 'logo_readNow.svg' },
+        { id: 'typeNow', src: 'logo_type' },
+        { id: 'liveNow', src: 'logo_live' },
+        { id: 'readNow', src: 'logo_read' },
     ];
     const handleHamburgerMenu = () => {
         setIsOpen(!isOpen);
@@ -46,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
                     {menus
                         .filter(menu => menu.id !== currentMenu)
                         .map(menu => (
-                            <img onClick={() => handleMenu(menu.id)} key={menu.id} src={menu.src} alt={menu.id} className={styles.menuLogo} />
+                            <img onClick={() => handleMenu(menu.id)} key={menu.id} src={`${menu.src}-gray.png`} alt={menu.id} className={styles.menuLogo} />
                         ))}
                 </div>
             )}
@@ -55,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
                     {menus
                         .filter(menu => menu.id === currentMenu)
                         .map(menu => (
-                            <img key={menu.id} src={menu.src} alt={menu.id} className={styles.menuLogo}/>
+                            <img key={menu.id} src={`${menu.src}-black.png`} alt={menu.id} className={styles.menuLogo}/>
                         ))}
                 </div>
             )}

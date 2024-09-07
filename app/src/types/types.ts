@@ -14,3 +14,10 @@ export interface HeaderProps {
     title: TitleType;
 }
 
+export type WordProps = {
+    word:string;
+    description:string;
+    link:string;
+    registDate:string;
+}
+

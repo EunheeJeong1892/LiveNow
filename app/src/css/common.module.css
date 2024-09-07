@@ -1,7 +1,7 @@
 .header {
     display: flex;
     max-width: 1920px;
-    padding: 80px;
+    padding: 40px;
     align-items: center;
     gap: 20px;
     background: linear-gradient(180deg, #FFF 0%, #FFF 85%, rgba(255, 255, 255, 0.00) 100%);
@@ -84,12 +84,13 @@
 
 .menuLogo {
   cursor:pointer;
-
+  width:200px;
+  height:60px;
   z-index: 600;
 }
 
 .typeNowContainer{
-  margin:0px 80px;
+  margin:0px 40px;
 }
 .typeNowContainer .editable {
   outline: none;
@@ -118,7 +119,8 @@
 .popupImage {
   position: absolute;
   max-width: 300px;
-  height: auto;
+  width:300px;
+  height:300px;
   display: none;
   border-radius: 9px;
   background:lightgray 50% / cover no-repeat;
@@ -132,7 +134,7 @@
   align-items: center;
   gap: 30px;
   flex-shrink: 0;
-  margin:0px 80px;
+  margin:0px 40px;
   overflow-y: auto;
   height:calc(100% - 220px);
 }

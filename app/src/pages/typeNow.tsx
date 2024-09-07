@@ -5,6 +5,9 @@ import styles from "../css/common.module.css";
 import {Helmet} from "react-helmet-async";
 import {QUESTIONS} from "../constants/constants";
 import Outcome from "../components/outcome";
+import {useRecoilValue} from "recoil";
+import {answersAtom, wordsAtom} from "../atoms";
+import {WordProps} from "../types/types";
 
 interface PopupImage {
     src: string;
@@ -21,29 +24,17 @@ function TypeNow() {
     const [isEmpty, setIsEmpty] = useState<boolean>(true); // placeholder 표시 여부
     const [showOutcome, setShowOutcome] = useState<boolean>(false); // Outcome 표시 상태
     const [placeholder, setPlaceholder] = useState('');
-    const [imagesToShow, setImagesToShow] = useState<string[]>([]); // Outcome에 넘길 이미지 배열
+    const [imagesToShow, setImagesToShow] = useState<WordProps[]>([]); // Outcome에 넘길 이미지 배열
     const [editableHtml, setEditableHtml] = useState<string>(""); // Outcome에 넘길 editable HTML
     const placeholderNum = Math.floor(Math.random() * placeholders.length)
+    const wordList = useRecoilValue(wordsAtom);
+
     useEffect(() => {
         // 5개의 문장 중 하나를 랜덤으로 선택
         const randomPlaceholder =
             placeholders[placeholderNum];
         setPlaceholder(randomPlaceholder);
     }, [placeholderNum]);
-
-
-    const wordsToImages: { [key: string]: string } = {
-        '해': "https://mblogthumb-phinf.pstatic.net/MjAyMDAxMDRfMTE3/MDAxNTc4MTM5MDczOTM5.CcqB70VCSvHm6hXdH7guH65KFtEeC8BQ93W_8i1YQqsg.tm1l70cIbIkIjsWoEabtsIKvno4IJKtrAlakZszKab8g.JPEG.nimbus89/_DSC1140.JPG?type=w800",
-        '노래': "https://mmagimg.speedgabia.com/mag/2023/06/knowhow_mic/_music-technology-guitar-microphone-studio-amplifier-846852-pxhere.com.jpg",
-        '햇빛': "https://img.khan.co.kr/news/2016/02/03/khan_YkQLTc.jpg",
-        '하루': "https://image.musinsa.com/mfile_s01/2017/06/19/193e212e57b58a571be84a838716ff44144200.jpg",
-        '푸른': "https://cdn.eroun.net/news/photo/202009/20046_40083_3546.jpg",
-        '예쁘다': "path/to/pretty.jpg",
-        '심사': "https://cdn.monews.co.kr/news/photo/201908/204245_55073_4314.jpg",
-        '심장': "https://www.korea.kr/newsWeb/resources/temp/images/000055/%EC%8B%AC%EC%9E%A5%EB%A7%88%EB%B9%84_%EB%B3%B8%EB%AC%B8.jpg",
-        '발표': "https://t2.daumcdn.net/thumb/R720x0.fjpg/?fname=http://t1.daumcdn.net/brunch/service/user/2FUE/image/Wanki2t437f-tCXrbJOKsb13Uws.jpg",
-        '화이팅': "https://images.chosun.com/resizer/SRsj79kODbd4cfbNoa1IdC4aZ0k=/616x0/filters:focal(290x112:300x122)/cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/7YVXA3CMCBG3HMNWYMH4CADYEU.jpg",
-    };
 
     useEffect(() => {
         localStorage.removeItem("last-text");
@@ -94,8 +85,9 @@ function TypeNow() {
         let formattedText = editableDiv.current.innerText;
         console.log(formattedText)
         setIsEmpty(formattedText.trim() === ""); // 텍스트가 없으면 placeholder 표시
-        for (const word in wordsToImages) {
-            const regex = new RegExp(`(${word})`, "g");
+
+        for(const item of wordList){
+            const regex = new RegExp(`(${item.word})`, "g");
             formattedText = formattedText.replace(
                 regex,
                 '<span style="    text-decoration: underline;    text-decoration-thickness: 2px;\n' +
@@ -109,32 +101,37 @@ function TypeNow() {
         let originText = editableDiv.current.innerText;
         const words = originText.split(/\s+/);
         words.forEach((word) => {
-            console.log(wordsToImages[word])
-            if (wordsToImages[word] && !displayedWords.has(word)) {
-                showPopupImage(word);
+            const finded:WordProps[] | [] = wordList.filter(o => o.word === word) || []
+            if (finded.length > 0 && !displayedWords.has(word)) {
+                showPopupImage(word, finded);
                 setDisplayedWords((prev) => new Set(prev).add(word));
             }
         });
 
         editableDiv.current.innerHTML = formattedText;
 
-        const newImages = words
-            .filter((word) => wordsToImages[word] && !displayedWords.has(word))
-            .map((word) => wordsToImages[word]);
+        const newImages: WordProps[] = words
+            .filter((word) => wordList.find(o => o.word === word) && !displayedWords.has(word))
+            .map((word) => wordList.find(o => o.word === word)!)
+            .filter((item): item is WordProps => item !== undefined); // 타입 보장
 
+        console.log(newImages)
         if (newImages.length > 0) {
             setImagesToShow((prevImages) => [...prevImages, ...newImages]);
         }
+
         setCaretToEnd(editableDiv.current);
     };
 
-    const showPopupImage = (word: string) => {
+    const showPopupImage = (word: string, finded : WordProps[]) => {
         const randomX = Math.random() * (window.innerWidth - 200);
         const randomY = Math.random() * (window.innerHeight - 200);
+        console.log(finded[0])
         setPopupImages((prev) => [
+
             ...prev,
             {
-                src: wordsToImages[word],
+                src: `https://daqsct7lk85c0.cloudfront.net/public/words/${finded[0].link}`,
                 style: {
                     left: `${randomX}px`,
                     top: `${randomY}px`,

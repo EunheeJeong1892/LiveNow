@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import styles from "../css/common.module.css";
 import { useNavigate } from 'react-router-dom';
+import {WordProps} from "../types/types";
 
 interface OutcomeProps {
     message: string,
-    images: string[];  // 이미지 URL 배열
+    images: WordProps[];  // 이미지 URL 배열
 }
 
 const Outcome: React.FC<OutcomeProps> = ({ message, images }) => {
@@ -37,7 +38,7 @@ const Outcome: React.FC<OutcomeProps> = ({ message, images }) => {
             <div className={styles.fullscreenContainer}>
                 {images.length > 0 && (
                     <img
-                        src={images[currentImageIndex]}
+                        src={`https://daqsct7lk85c0.cloudfront.net/public/words/${images[currentImageIndex].link}`}
                         alt="Slideshow"
                         className={styles.fullscreenImage}
                     />
