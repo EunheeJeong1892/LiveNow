@@ -37,6 +37,7 @@ function Intro() {
                 style={{ height: '100%', width: '100%', objectFit: 'cover' }}
                 playsInline
                 controls
+                muted={true}
             />
         </div>
 </>
