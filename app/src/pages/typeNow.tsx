@@ -23,17 +23,19 @@ function TypeNow() {
     const [isComposing, setIsComposing] = useState(false); // 한글 조합 상태
     const [isEmpty, setIsEmpty] = useState<boolean>(true); // placeholder 표시 여부
     const [showOutcome, setShowOutcome] = useState<boolean>(false); // Outcome 표시 상태
-    const [placeholder, setPlaceholder] = useState('');
     const [imagesToShow, setImagesToShow] = useState<WordProps[]>([]); // Outcome에 넘길 이미지 배열
     const [editableHtml, setEditableHtml] = useState<string>(""); // Outcome에 넘길 editable HTML
-    const placeholderNum = Math.floor(Math.random() * placeholders.length)
+    const [placeholder, setPlaceholder] = useState('');
+    const [placeholderNum, setPlaceholderNum] = useState<number>(0);
     const wordList = useRecoilValue(wordsAtom);
+    const [hasSubmitted, setHasSubmitted] = useState(false); // 방어 코드 추가
 
     useEffect(() => {
-        // 5개의 문장 중 하나를 랜덤으로 선택
-        const randomPlaceholder =
-            placeholders[placeholderNum];
-        setPlaceholder(randomPlaceholder);
+        setPlaceholderNum(Math.floor(Math.random() * placeholders.length))
+    }, []); // 빈 배열을 의존성으로 전달하면 처음 한 번만 실행됨
+
+    useEffect(() => {
+        setPlaceholder(placeholders[placeholderNum]);
     }, [placeholderNum]);
 
     useEffect(() => {
@@ -51,15 +53,16 @@ function TypeNow() {
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.key === "Enter") {
+        if (!isComposing && e.key === "Enter") {
             e.preventDefault();  // 기본 Enter 동작 방지
-            //postAnswer(placeholderNum+1, inputText)
-            setShowOutcome(true);
+            e.stopPropagation(); // 이벤트 전파 방지
+            postAnswer(placeholderNum + 1, inputText);
         }
     };
 
     const postAnswer = async (questionID:number,message:string) => {
         try {
+            if (hasSubmitted) return;
             const response = await fetch('https://tqx65zlmb5.execute-api.ap-northeast-2.amazonaws.com/Answers', {
                 method: 'POST',
                 headers: {
@@ -72,6 +75,7 @@ function TypeNow() {
             });
 
             if (response.ok) {
+                setHasSubmitted(true);
                 setShowOutcome(true);
             }
         } catch (error) {
@@ -94,8 +98,6 @@ function TypeNow() {
                 '    text-underline-position: under;\n' +
                 '    text-decoration-color: #00D364;">$1</span>'
             );
-            console.log("-")
-            console.log(formattedText)
         }
 
         let originText = editableDiv.current.innerText;
@@ -115,7 +117,6 @@ function TypeNow() {
             .map((word) => wordList.find(o => o.word === word)!)
             .filter((item): item is WordProps => item !== undefined); // 타입 보장
 
-        console.log(newImages)
         if (newImages.length > 0) {
             setImagesToShow((prevImages) => [...prevImages, ...newImages]);
         }
