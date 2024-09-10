@@ -8,13 +8,15 @@ import LiveNow from "./pages/liveNow";
 import ReadNow from "./pages/readNow";
 import {HelmetProvider} from "react-helmet-async";
 import Intro from "./pages/intro";
-import { useSetRecoilState} from "recoil";
-import {answersAtom, wordsAtom} from "./atoms";
+import {useRecoilValue, useSetRecoilState} from "recoil";
+import {answersAtom, progressBarVisibleAtom, wordsAtom} from "./atoms";
+import FullScreenProgressBar from "./components/FullScreenProgressBar";
 
 function App() {
 
     const setAnswerList = useSetRecoilState(answersAtom);
     const setWordList = useSetRecoilState(wordsAtom)
+    const isVisible = useRecoilValue(progressBarVisibleAtom);
 
     useEffect(() => {
         const fetchAnnwers = async () => {
@@ -50,6 +52,7 @@ function App() {
 
   return (
           <HelmetProvider>
+              <FullScreenProgressBar isVisible={isVisible} />
           <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Navigate to="/intro" />} />

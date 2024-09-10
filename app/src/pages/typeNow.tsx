@@ -5,8 +5,8 @@ import styles from "../css/common.module.css";
 import {Helmet} from "react-helmet-async";
 import {QUESTIONS} from "../constants/constants";
 import Outcome from "../components/outcome";
-import {useRecoilValue} from "recoil";
-import {answersAtom, wordsAtom} from "../atoms";
+import {useRecoilValue, useSetRecoilState} from "recoil";
+import {answersAtom, progressBarVisibleAtom, wordsAtom} from "../atoms";
 import {WordProps} from "../types/types";
 
 interface PopupImage {
@@ -29,6 +29,7 @@ function TypeNow() {
     const [placeholderNum, setPlaceholderNum] = useState<number>(0);
     const wordList = useRecoilValue(wordsAtom);
     const [hasSubmitted, setHasSubmitted] = useState(false); // 방어 코드 추가
+    const setProgressBarVisible = useSetRecoilState(progressBarVisibleAtom);
 
     useEffect(() => {
         setPlaceholderNum(Math.floor(Math.random() * placeholders.length))
@@ -63,6 +64,7 @@ function TypeNow() {
     const postAnswer = async (questionID:number,message:string) => {
         try {
             if (hasSubmitted) return;
+            setProgressBarVisible(true);
             const response = await fetch('https://tqx65zlmb5.execute-api.ap-northeast-2.amazonaws.com/Answers', {
                 method: 'POST',
                 headers: {
@@ -80,6 +82,8 @@ function TypeNow() {
             }
         } catch (error) {
             console.error('Error fetching data:', error);
+        } finally {
+            setProgressBarVisible(false); // Progress Bar 숨기기
         }
     };
 

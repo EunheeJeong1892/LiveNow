@@ -1,5 +1,8 @@
 import React, {ReactNode, useRef, useState} from 'react';
 import styles from "../css/common.module.css";
+import {useRecoilValue, useSetRecoilState} from "recoil";
+import {progressBarVisibleAtom, wordsAtom} from "../atoms";
+import {WordProps} from "../types/types";
 
 interface ModalProps {
     isOpen: boolean;
@@ -12,6 +15,8 @@ const AddWordModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     const fileDiv = useRef<HTMLInputElement>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null); // 선택된 파일 상태
     const [uploading, setUploading] = useState(false); // 업로드 상태
+    const setWordsAtom = useSetRecoilState(wordsAtom);
+    const setProgressBarVisible = useSetRecoilState(progressBarVisibleAtom);
 
     if (!isOpen) return null; // 모달이 열려있지 않으면 아무것도 렌더링하지 않음
 
@@ -32,6 +37,7 @@ const AddWordModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             setUploading(true);
 
             try {
+                setProgressBarVisible(true);
                 // 1. S3 업로드 URL 가져오기 (Lambda에서 presigned URL 생성)
                 const presignedUrlResponse = await fetch(
                     'https://gpzyo7nv2d.execute-api.ap-northeast-2.amazonaws.com/SaveToS3', // API Gateway URL
@@ -69,12 +75,25 @@ const AddWordModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                     }),
                 });
 
+                const newWord:WordProps = {
+                    word:word,
+                    description:desc,
+                    link:selectedFile.name,
+                    registDate:''
+                }
+                setWordsAtom((prevState: WordProps[]) => [
+                    ...prevState,
+                    newWord
+                ]);
+
                 alert("저장되었습니다!");
                 setUploading(false);
                 onClose();
             } catch (error) {
                 console.error("저장 중 오류 발생:", error);
                 setUploading(false);
+            } finally {
+                setProgressBarVisible(false); // Progress Bar 숨기기
             }
         } else {
             alert("모든 필드를 입력하고 이미지를 첨부해주세요.");

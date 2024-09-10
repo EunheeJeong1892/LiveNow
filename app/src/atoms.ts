@@ -10,3 +10,9 @@ export const wordsAtom = atom<WordProps[]>({
     key: 'wordsAtom',
     default: []
 });
+
+
+export const progressBarVisibleAtom = atom({
+    key: 'progressBarVisible',
+    default: false,
+});
