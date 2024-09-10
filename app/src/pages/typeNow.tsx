@@ -91,7 +91,6 @@ function TypeNow() {
         if (!editableDiv.current) return;
 
         let formattedText = editableDiv.current.innerText;
-        console.log(formattedText)
         setIsEmpty(formattedText.trim() === ""); // 텍스트가 없으면 placeholder 표시
 
         for(const item of wordList){
@@ -128,22 +127,36 @@ function TypeNow() {
         setCaretToEnd(editableDiv.current);
     };
 
-    const showPopupImage = (word: string, finded : WordProps[]) => {
+    const showPopupImage = (word: string, finded: WordProps[]) => {
         const randomX = Math.random() * (window.innerWidth - 200);
         const randomY = Math.random() * (window.innerHeight - 200);
-        console.log(finded[0])
-        setPopupImages((prev) => [
 
-            ...prev,
-            {
-                src: `https://daqsct7lk85c0.cloudfront.net/public/words/${finded[0].link}`,
+        setPopupImages((prev) => {
+            const baseLeft = randomX;
+            const baseTop = randomY;
+
+            const newImages = finded.map((image, index) => ({
+                src: `https://daqsct7lk85c0.cloudfront.net/public/words/${image.link}`,
                 style: {
-                    left: `${randomX}px`,
-                    top: `${randomY}px`,
+                    left: `${baseLeft}px`,  // 이미지가 5px씩 오른쪽으로
+                    top: `${baseTop}px`,   // 이미지가 5px씩 아래로
+                    transform: index === 0 ? '' : `rotate(5.922deg)`,
+                    zIndex: index,                    // 순서대로 z-index 부여
                     display: "block",
                 },
-            },
-        ]);
+            }));
+
+            return [...prev, ...newImages];
+        });
+    };
+
+    const handleImageClick = (index: number) => {
+        setPopupImages((prev) => {
+            const clickedImage = prev[index];
+            const restImages = prev.filter((_, i) => i !== index);
+
+            return [...restImages, { ...clickedImage, style: { ...clickedImage.style, zIndex: prev.length } }];
+        });
     };
 
     const setCaretToEnd = (el: HTMLElement) => {
@@ -192,6 +205,7 @@ function TypeNow() {
                             style={image.style}
                             className={styles.popupImage}
                             alt=""
+                            onClick={() => handleImageClick(index)}
                         />
                     ))}
                 </div>
