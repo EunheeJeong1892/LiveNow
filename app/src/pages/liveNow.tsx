@@ -3,7 +3,7 @@ import styles from "../css/common.module.css";
 import Header from "../components/header";
 import {Helmet} from "react-helmet-async";
 import {WordProps} from "../types/types";
-import {useRecoilValue} from "recoil";
+import {useRecoilValue, useSetRecoilState} from "recoil";
 import {wordsAtom} from "../atoms";
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
 import AddWordModal from "../components/addWordModal";
@@ -11,6 +11,7 @@ import AddWordModal from "../components/addWordModal";
 function LiveNow() {
     const [inputText, setInputText] = useState<string>(""); // 상태로 텍스트 관리
     const searchDiv = useRef<HTMLInputElement>(null);
+    const setWordsAtom = useSetRecoilState(wordsAtom);
     const words = useRecoilValue(wordsAtom);
     const [filteredWords, setFilteredWords] = useState<WordProps[]>(words); // 필터된 이미지 상태
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,6 +26,26 @@ function LiveNow() {
     useEffect(() => {
         checkText()
     }, [inputText]);
+
+    // 처음 페이지가 로드될 때 words 데이터를 가져와서 Recoil 상태에 저장
+    useEffect(() => {
+        const fetchWords = async () => {
+            try {
+                const response = await fetch('https://gpzyo7nv2d.execute-api.ap-northeast-2.amazonaws.com/ReadNow');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+                const data = await response.json();
+                setWordsAtom(data);  // 데이터 가져와서 Recoil 상태에 저장
+                setFilteredWords(data)
+            } catch (error) {
+                console.error("Error loading words:", error);
+            }
+        };
+
+        fetchWords();  // 데이터 가져오기
+    }, [setWordsAtom]);  // `setWordsAtom`이 변경될 때만 useEffect가 실행
+
 
     const checkText = () => {
         const filtered = words.filter((word) => word.word.includes(inputText.trim()));
@@ -57,7 +78,7 @@ function LiveNow() {
                                 ))
                             ) :
                                 (
-                                <p>검색된 이미지가 없습니다.</p>
+                                <p>아직 등록되지 않은 단어입니다.<br/>아래의 + 버튼을 눌러 처음으로 단어를 등록해보세요!</p>
                             )}
                         </Masonry>
                     </ResponsiveMasonry>

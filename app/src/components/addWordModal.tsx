@@ -88,6 +88,10 @@ const AddWordModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
                 alert("저장되었습니다!");
                 setUploading(false);
+                // 저장 완료 후 필드 초기화
+                wordDiv.current.value = '';   // wordDiv 초기화
+                descDiv.current.value = '';   // descDiv 초기화
+                setSelectedFile(null);        // 파일 초기화
                 onClose();
             } catch (error) {
                 console.error("저장 중 오류 발생:", error);

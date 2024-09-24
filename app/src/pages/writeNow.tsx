@@ -14,7 +14,7 @@ interface PopupImage {
     style: React.CSSProperties;
 }
 
-function TypeNow() {
+function WriteNow() {
     const placeholders = QUESTIONS.map(o => o.message)
     const editableDiv = useRef<HTMLDivElement>(null);
     const [popupImages, setPopupImages] = useState<PopupImage[]>([]);
@@ -30,7 +30,6 @@ function TypeNow() {
     const wordList = useRecoilValue(wordsAtom);
     const [hasSubmitted, setHasSubmitted] = useState(false); // 방어 코드 추가
     const setProgressBarVisible = useSetRecoilState(progressBarVisibleAtom);
-
     useEffect(() => {
         setPlaceholderNum(Math.floor(Math.random() * placeholders.length))
     }, []); // 빈 배열을 의존성으로 전달하면 처음 한 번만 실행됨
@@ -91,6 +90,7 @@ function TypeNow() {
         if (!editableDiv.current) return;
 
         let formattedText = editableDiv.current.innerText;
+        let processedText = editableDiv.current.innerText;
         setIsEmpty(formattedText.trim() === ""); // 텍스트가 없으면 placeholder 표시
 
         for(const item of wordList){
@@ -129,7 +129,7 @@ function TypeNow() {
 
     const showPopupImage = (word: string, finded: WordProps[]) => {
         const randomX = Math.random() * (window.innerWidth - 200);
-        const randomY = Math.random() * (window.innerHeight - 200);
+        const randomY = Math.random() * (window.innerHeight - 200) + 60;
 
         setPopupImages((prev) => {
             const baseLeft = randomX;
@@ -176,11 +176,10 @@ function TypeNow() {
         <>
             {showOutcome && <Outcome images={imagesToShow} message={inputText} />} {/* Outcome 컴포넌트를 동적으로 렌더링 */}
         <Helmet>
-            <title>Type Now</title>
+            <title>Write Now</title>
         </Helmet>
-        <Header title={"typeNow"}></Header>
+        <Header title={"writeNow"}></Header>
             <div className={styles.typeNowContainer}>
-
                 <div
                     id="editable"
                     className={styles.editable}
@@ -214,4 +213,4 @@ function TypeNow() {
     );
 }
 
-export default TypeNow;
+export default WriteNow;

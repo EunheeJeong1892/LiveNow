@@ -4,7 +4,6 @@ import {Helmet} from "react-helmet-async";
 
 function Intro() {
     const videoRef = useRef<HTMLVideoElement>(null);
-
     const navigate = useNavigate(); // useNavigate 훅 사용
 
     useEffect(() => {
@@ -18,9 +17,9 @@ function Intro() {
                     console.log(error);
                 });
 
-            // 동영상이 끝났을 때 /typeNow 페이지로 리디렉션
+            // 동영상이 끝났을 때 /writeNow 페이지로 리디렉션
             videoElement.onended = () => {
-                navigate('/typeNow')
+                navigate('/writeNow')
             };
         }
     }, [navigate]);

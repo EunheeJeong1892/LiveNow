@@ -7,6 +7,7 @@
   position: sticky;
   width: auto;
   top: 0px;
+  z-index: 100;
 }
 
 .header-logo{
@@ -88,6 +89,53 @@
   z-index: 600;
   margin-right:24px;
 }
+.menuLogoHover{
+  border-bottom: 1px solid #00D364;
+  margin-bottom:-1px
+}
+.guideIcon{
+  background-image:url("../../public/ic_guide.png");
+  width: 57px;
+  height: 60px;
+  background-repeat: no-repeat;
+  margin-left: auto;
+  cursor:pointer;
+}
+.guideIcon:hover, .guideIconActive{
+  background-image:url("../../public/ic_guide_active.png");
+}
+
+.guideContainer{
+  display: inline-flex;
+  padding: 20px;
+  flex-direction: column;
+  align-items: flex-end;
+  border-radius: 5px;
+  background: #7f7f7f;
+  position: fixed;
+  max-width: 350px;
+  right: 50px;
+  top: 120px;
+}
+
+/* guideContainer의 기본 상태 */
+.guideContainer {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out; /* 0.5초 동안 opacity 변화를 적용 */
+  pointer-events: none; /* 안 보일 때는 클릭 방지 */
+}
+
+/* guide가 열렸을 때 적용되는 fade-in 효과 */
+.guideContainer.fade-in {
+  opacity: 1;
+  pointer-events: auto; /* 보일 때 클릭 가능 */
+}
+
+/* guide가 닫힐 때 적용되는 fade-out 효과 */
+.guideContainer.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
 
 .typeNowContainer{
   margin:0px 40px;
@@ -122,7 +170,7 @@
   width:300px;
   height:300px;
   display: none;
-  border-radius: 9px;
+  border-radius: 3px;
   background:lightgray 50% / cover no-repeat;
 
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.10);
@@ -167,7 +215,7 @@
   font-family: "Noto Sans CJK KR";
   font-size: 30px;
   font-style: normal;
-  font-weight: 300;
+  font-weight: 350;
   line-height: 52px;
   letter-spacing: -0.9px;
 }
@@ -179,7 +227,7 @@
 .readCardBodySelected{
   font-size: 48px !important;;
   font-style: normal !important;;
-  font-weight: 300 !important;;
+  font-weight: 400 !important;;
   line-height: 76px !important;; /* 158.333% */
   letter-spacing: -1.44px !important;;
 }
@@ -292,7 +340,7 @@
 
 .gridImage {
   width: 300px;
-  border-radius: 9px;
+  border-radius: 3px;
 }
 .floatAddBtn{
   display: flex;
@@ -315,7 +363,7 @@
 }
 
 .liveNowSearch{
-  font-size: 73px;
+  font-size: 45px;
   font-weight: 300;
   letter-spacing: -2.19px;
   border:none;
@@ -323,7 +371,7 @@
 }
 .liveNowSearch::placeholder{
   color: #AFAFAF;
-  font-size: 73px;
+  font-size: 45px;
   letter-spacing: -2.19px;
 }
 
@@ -348,6 +396,8 @@
 .gridItem:hover .liveNowImageContent {
   display: flex; /* 상위 요소를 hover하면 표시 */
 }
+.gridItem:hover img{
+}
 
 .liveNowImageWord{
   color: #FFF;
@@ -358,7 +408,7 @@
 .liveNowImageDesc{
   color: #FFF;
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 350;
   letter-spacing: -0.48px;
 }
 

@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter, Route, Routes, Navigate} from "react-router-dom";
 
-import TypeNow from "./pages/typeNow";
+import WriteNow from "./pages/writeNow";
 import LiveNow from "./pages/liveNow";
 import ReadNow from "./pages/readNow";
 import {HelmetProvider} from "react-helmet-async";
@@ -57,7 +57,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Navigate to="/intro" />} />
                 <Route path="/intro" element={<Intro />} />
-                <Route path="/typeNow" element={<TypeNow />} />
+                <Route path="/writeNow" element={<WriteNow />} />
                 <Route path="/liveNow" element={<LiveNow />} />
                 <Route path="/readNow" element={<ReadNow />} />
             </Routes>

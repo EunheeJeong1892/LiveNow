@@ -9,7 +9,7 @@ export interface ReadCardProps {
 }
 
 
-type TitleType = "typeNow" | "liveNow" | "readNow";
+type TitleType = "writeNow" | "liveNow" | "readNow";
 export interface HeaderProps {
     title: TitleType;
 }
