@@ -7,12 +7,13 @@ import {QUESTIONS} from "../constants/constants";
 import Outcome from "../components/outcome";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {answersAtom, progressBarVisibleAtom, wordsAtom} from "../atoms";
-import {WordProps} from "../types/types";
+import {UnderlinedWord, WordProps} from "../types/types";
 
 interface PopupImage {
     src: string;
     style: React.CSSProperties;
 }
+
 
 function WriteNow() {
     const placeholders = QUESTIONS.map(o => o.message)
@@ -30,6 +31,8 @@ function WriteNow() {
     const wordList = useRecoilValue(wordsAtom);
     const [hasSubmitted, setHasSubmitted] = useState(false); // 방어 코드 추가
     const setProgressBarVisible = useSetRecoilState(progressBarVisibleAtom);
+    const [underlinedWordsData, setUnderlinedWordsData] = useState<UnderlinedWord[]>([]); // 단어와 이미지 정보 저장
+
     useEffect(() => {
         setPlaceholderNum(Math.floor(Math.random() * placeholders.length))
     }, []); // 빈 배열을 의존성으로 전달하면 처음 한 번만 실행됨
@@ -56,14 +59,20 @@ function WriteNow() {
         if (!isComposing && e.key === "Enter") {
             e.preventDefault();  // 기본 Enter 동작 방지
             e.stopPropagation(); // 이벤트 전파 방지
-            postAnswer(placeholderNum + 1, inputText);
+            if(inputText.trim() !== ""){
+                postAnswer(placeholderNum + 1, inputText.trim());
+            }
         }
     };
 
     const postAnswer = async (questionID:number,message:string) => {
+
         try {
             if (hasSubmitted) return;
             setProgressBarVisible(true);
+
+            setUnderlinedWordsData(underlinedWordsData.sort((a, b) => a.position - b.position))
+
             const response = await fetch('https://tqx65zlmb5.execute-api.ap-northeast-2.amazonaws.com/Answers', {
                 method: 'POST',
                 headers: {
@@ -72,6 +81,7 @@ function WriteNow() {
                 body: JSON.stringify({
                     questionID,
                     message,
+                    wordsWithImages:underlinedWordsData
                 }),
             });
 
@@ -84,24 +94,51 @@ function WriteNow() {
         } finally {
             setProgressBarVisible(false); // Progress Bar 숨기기
         }
+
+
     };
 
     const checkText = () => {
         if (!editableDiv.current) return;
 
         let formattedText = editableDiv.current.innerText;
-        let processedText = editableDiv.current.innerText;
+        const plainText = editableDiv.current?.innerText || '';
+        let newUnderlinedWordsData: UnderlinedWord[] = []; // 새로운 데이터를 담을 배열
+
         setIsEmpty(formattedText.trim() === ""); // 텍스트가 없으면 placeholder 표시
 
-        for(const item of wordList){
+        for(const item of wordList) {
             const regex = new RegExp(`(${item.word})`, "g");
-            formattedText = formattedText.replace(
+            /*formattedText = formattedText.replace(
                 regex,
                 '<span style="    text-decoration: underline;    text-decoration-thickness: 2px;\n' +
                 '    text-underline-position: under;\n' +
                 '    text-decoration-color: #00D364;">$1</span>'
             );
+
+             */
+
+            formattedText = formattedText.replace(
+                regex,
+                '<span style="border-bottom: 2px solid #00D364;">$1</span>'
+            );
+
+            const wordPositions = [...plainText.matchAll(regex)].map(match => match.index);
+
+            if (wordPositions.length > 0) {
+                wordPositions.forEach(position => {
+                    if (position !== undefined) {
+                        newUnderlinedWordsData.push({
+                            word: item.word,
+                            position, // 단어가 시작하는 위치 (HTML을 제외한 실제 텍스트에서의 위치)
+                            imageSrc: `https://daqsct7lk85c0.cloudfront.net/public/words/${item.link}` // 이미지 링크
+                        });
+                    }
+                });
+            }
         }
+
+        setUnderlinedWordsData(newUnderlinedWordsData); // 새로운 데이터를 상태로 설정
 
         let originText = editableDiv.current.innerText;
         const words = originText.split(/\s+/);
@@ -174,7 +211,7 @@ function WriteNow() {
 
     return (
         <>
-            {showOutcome && <Outcome images={imagesToShow} message={inputText} />} {/* Outcome 컴포넌트를 동적으로 렌더링 */}
+            {showOutcome && <Outcome images={underlinedWordsData} message={inputText} />} {/* Outcome 컴포넌트를 동적으로 렌더링 */}
         <Helmet>
             <title>Write Now</title>
         </Helmet>

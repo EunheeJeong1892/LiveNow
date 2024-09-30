@@ -43,6 +43,7 @@ function ReadNow() {
                             questionId={card.questionID}
                             message={card.message}
                             regDate={card.registDate}
+                            wordsWithImages={card.wordsWithImages}
                             onClick={() => handleCardClick(idx)} // 카드 클릭 시 호출
                             isSelected={selectedCardId === idx} // 선택된 카드인지 여부 전달
                         />

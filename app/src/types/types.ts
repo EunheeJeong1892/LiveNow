@@ -1,4 +1,5 @@
 
+
 export interface ReadCardProps {
     id : number;
     questionId : number;
@@ -6,6 +7,7 @@ export interface ReadCardProps {
     regDate : string;
     onClick: () => void;
     isSelected: boolean;
+    wordsWithImages: Array<any>;
 }
 
 
@@ -20,4 +22,11 @@ export type WordProps = {
     link:string;
     registDate:string;
 }
+
+export interface UnderlinedWord {
+    word: string;
+    position: number;
+    imageSrc: string;
+}
+
 
