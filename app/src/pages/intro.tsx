@@ -32,7 +32,7 @@ function Intro() {
         <div style={{ height: '100vh', width: '100vw', overflow: 'hidden' }}>
             <video
                 ref={videoRef}
-                src="https://daqsct7lk85c0.cloudfront.net/public/main01.mp4" // 동영상 파일 URL
+                src="https://daqsct7lk85c0.cloudfront.net/public/main02.mp4" // 동영상 파일 URL
                 style={{ height: '100%', width: '100%', objectFit: 'cover' }}
                 playsInline
                 controls
