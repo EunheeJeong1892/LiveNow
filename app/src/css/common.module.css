@@ -185,7 +185,7 @@
   margin:0px 40px;
   overflow-y: auto;
   height:calc(100% - 220px);
-  margin-bottom: 300px;
+  padding-bottom: 300px;
 }
 
 .readCardContainer{
@@ -266,14 +266,25 @@
   text-underline-position: under;
   text-decoration-color: #00D364;
   cursor: pointer;
+  position: relative;
 }
 .readCardImageTooltip{
   position: absolute;
   background-color: #fff;
   border: 1px solid #ddd;
-  padding: 10px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 10;
+  left:40px;
+  bottom: -60px;
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+.readCardImageTooltip img{
+  max-width:300px;
+}
+.readCardUnderline:hover .readCardImageTooltip {
+  display: block; /* hover 시에만 보임 */
 }
 
 .fullscreenContainer {

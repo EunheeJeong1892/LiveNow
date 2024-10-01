@@ -1,12 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styles from "../css/common.module.css";
 import {ReadCardProps} from "../types/types";
 import {QUESTIONS} from "../constants/constants";
 
+interface ReadCardWithWordClickProps extends ReadCardProps {
+    onWordClick: (event: React.MouseEvent, word: string) => void;  // 단어 클릭 핸들러
+    selectedWord: string | null;          // 선택된 단어
+}
 
-const ReadCard: React.FC<ReadCardProps> = ({ id, questionId, message, regDate, onClick, isSelected, wordsWithImages }) => {
-    const [hoveredImage, setHoveredImage] = useState<string | null>(null);  // 툴팁으로 띄울 이미지의 상태
-
+const ReadCard: React.FC<ReadCardWithWordClickProps> = ({ id, questionId, message, regDate, onClick, isSelected, wordsWithImages,onWordClick,selectedWord }) => {
     const questionMessage = QUESTIONS.find(q => q.id === questionId)?.message || 'No message found';
     // 메시지를 wordsWithImages를 바탕으로 가공하여 단어에 underline과 tooltip을 추가하는 함수
     const renderMessageWithImages = () => {
@@ -27,14 +29,15 @@ const ReadCard: React.FC<ReadCardProps> = ({ id, questionId, message, regDate, o
             // 언더라인 처리된 단어 추가
             result.push(
                 <span key={`word-${index}`} className={styles.wordWithImage}>
-                <span
-                    className={styles.readCardUnderline}
-                    onMouseEnter={() => setHoveredImage(imageSrc)} // 이미지 툴팁 표시
-                    onMouseLeave={() => setHoveredImage(null)} // 이미지 툴팁 숨김
-                    data-tooltip={imageSrc} // 이미지의 src를 툴팁으로 표시
+                <span className={styles.readCardUnderline}
+                      onClick={(event) => onWordClick(event, word)}
                 >
-                    {word}
-                </span>
+                        {word}
+                    {/* 툴팁을 마우스 오버 시 표시 */}
+                    <div className={styles.readCardImageTooltip}>
+                            <img src={imageSrc} alt="Image Tooltip"/>
+                        </div>
+                    </span>
             </span>
             );
 
@@ -60,11 +63,6 @@ const ReadCard: React.FC<ReadCardProps> = ({ id, questionId, message, regDate, o
                 <div className={styles.readCardDate}>{regDate}</div>
             </div>
             <div className={`${styles.readCardBody} ${isSelected ? styles.readCardBodySelected : ''}`}>{ renderMessageWithImages()}</div>
-            {hoveredImage && (
-                <div className={styles.readCardImageTooltip}>
-                    <img src={`path_to_images/${hoveredImage}`} alt="Image Tooltip" />
-                </div>
-            )}
         </div>
     );
 };

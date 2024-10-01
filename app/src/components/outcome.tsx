@@ -13,19 +13,31 @@ const musicTracks = [
     "Allégro - Emmit Fenn.mp3",
     "Bittersweet Waltz - Sir Cubworth.mp3",
     "Bucolic Acrylic - Dan Bodan.mp3",
-    "Ceremonial Library - Asher Fulero.mp3"
+    "Ceremonial Library - Asher Fulero.mp3",
+    "Heavenly - Aakash Gandhi.mp3",
+    "Hopeful Freedom - Asher Fulero.mp3",
+    "Lullaby - JVNA.mp3",
+    "Maryandra's Waltz - Jesse Gallagher.mp3",
+    "No.2 Remembering Her - Esther Abrami.mp3",
+    "Snowfall Butterflies - Asher Fulero.mp3",
+    "Summer Symphony Ball - Sir Cubworth.mp3"
 ];
 
 const Outcome: React.FC<OutcomeProps> = ({ message, images }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [sliderEnded, setSliderEnded] = useState(false); // 슬라이더 종료 상태를 추적
     const [showBlackScreen, setShowBlackScreen] = useState(false); // 검정 화면 표시 상태
-    const audioRef = useRef(new Audio()); // Audio 객체를 useRef로 관리
+    const audioRef = useRef<HTMLAudioElement | null>(new Audio()); // Audio 객체를 useRef로 관리
     const [currentBgmTitle, setCurrentBgmTitle] = useState<string>("");
+    const [isPlaying, setIsPlaying] = useState(false); // 오디오 상태 관리
 
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
+
     useEffect(() => {
-        playRandomMusic()
+        skipRandomMusic()
+
+    }, []);
+    useEffect(() => {
         if (images.length === 0) {
             setShowBlackScreen(true)
             // 이미지가 없을 때 3초 후 검정 화면 숨기기
@@ -75,18 +87,38 @@ const Outcome: React.FC<OutcomeProps> = ({ message, images }) => {
             <span dangerouslySetInnerHTML={{ __html: coloredText + remainingText }} />
         );
     };
+    const pauseRandomMusic = () => {
+        if (audioRef.current) {
+            setIsPlaying(false);
+            audioRef.current.pause();
+        }
+    };
 
     const playRandomMusic = () => {
+        if (audioRef.current && !isPlaying) {
+            setIsPlaying(true);
+            audioRef.current.play().catch((error) => {
+                console.error("Error playing audio:", error);
+            });
+        }
+    };
+
+
+    const skipRandomMusic = () => {
         const randomIndex = Math.floor(Math.random() * musicTracks.length);
         const selectedTrack = `https://daqsct7lk85c0.cloudfront.net/public/bgm/${musicTracks[randomIndex]}`;
         setCurrentBgmTitle(musicTracks[randomIndex]);
-        console.log(currentBgmTitle)
-        // Pause the current audio and reset its src
-        audioRef.current.pause();
-        audioRef.current.src = selectedTrack;
-        audioRef.current.play();
-    };
 
+        // Pause the current audio and reset its src
+        if (audioRef.current) {
+            audioRef.current.pause(); // Pause the current track
+            audioRef.current.src = selectedTrack; // Set new source
+            audioRef.current.play().catch((error) => {
+                console.error("Error playing audio:", error);
+            });
+            setIsPlaying(true)
+        }
+    };
 
 
     return (
@@ -118,8 +150,12 @@ const Outcome: React.FC<OutcomeProps> = ({ message, images }) => {
                 </div>
             )}
             <div className={styles.musicWrapper}>
-                <img src={"ic_music_play.svg"} onClick={playRandomMusic} alt="Play"/>
-                <img src={"ic_music_skip.svg"} onClick={playRandomMusic} alt="Skip"/>
+                <img
+                    src={isPlaying ? "ic_music_pause.svg" : "ic_music_play.svg"}
+                    onClick={isPlaying ? pauseRandomMusic : playRandomMusic}
+                    alt={isPlaying ? "Pause" : "Play"}
+                />
+                <img src={"ic_music_skip.svg"} onClick={skipRandomMusic} alt="Skip"/>
             </div>
         </div>
     );

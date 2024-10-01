@@ -1,12 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import ContentEditable from 'react-contenteditable';
 import Header from "../components/header";
 import styles from "../css/common.module.css";
 import {Helmet} from "react-helmet-async";
 import {QUESTIONS} from "../constants/constants";
 import Outcome from "../components/outcome";
 import {useRecoilValue, useSetRecoilState} from "recoil";
-import {answersAtom, progressBarVisibleAtom, wordsAtom} from "../atoms";
+import {progressBarVisibleAtom, wordsAtom} from "../atoms";
 import {UnderlinedWord, WordProps} from "../types/types";
 
 interface PopupImage {
@@ -22,10 +21,7 @@ function WriteNow() {
     const [displayedWords, setDisplayedWords] = useState<Set<string>>(new Set());
     const [inputText, setInputText] = useState<string>(""); // 상태로 텍스트 관리
     const [isComposing, setIsComposing] = useState(false); // 한글 조합 상태
-    const [isEmpty, setIsEmpty] = useState<boolean>(true); // placeholder 표시 여부
     const [showOutcome, setShowOutcome] = useState<boolean>(false); // Outcome 표시 상태
-    const [imagesToShow, setImagesToShow] = useState<WordProps[]>([]); // Outcome에 넘길 이미지 배열
-    const [editableHtml, setEditableHtml] = useState<string>(""); // Outcome에 넘길 editable HTML
     const [placeholder, setPlaceholder] = useState('');
     const [placeholderNum, setPlaceholderNum] = useState<number>(0);
     const wordList = useRecoilValue(wordsAtom);
@@ -51,7 +47,6 @@ function WriteNow() {
     const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
         if (!isComposing) {
             setInputText(e.currentTarget.innerText);
-            setEditableHtml(e.currentTarget.innerHTML); // HTML 업데이트
         }
     };
 
@@ -95,7 +90,6 @@ function WriteNow() {
             setProgressBarVisible(false); // Progress Bar 숨기기
         }
 
-
     };
 
     const checkText = () => {
@@ -105,19 +99,8 @@ function WriteNow() {
         const plainText = editableDiv.current?.innerText || '';
         let newUnderlinedWordsData: UnderlinedWord[] = []; // 새로운 데이터를 담을 배열
 
-        setIsEmpty(formattedText.trim() === ""); // 텍스트가 없으면 placeholder 표시
-
         for(const item of wordList) {
             const regex = new RegExp(`(${item.word})`, "g");
-            /*formattedText = formattedText.replace(
-                regex,
-                '<span style="    text-decoration: underline;    text-decoration-thickness: 2px;\n' +
-                '    text-underline-position: under;\n' +
-                '    text-decoration-color: #00D364;">$1</span>'
-            );
-
-             */
-
             formattedText = formattedText.replace(
                 regex,
                 '<span style="border-bottom: 2px solid #00D364;">$1</span>'
@@ -151,16 +134,6 @@ function WriteNow() {
         });
 
         editableDiv.current.innerHTML = formattedText;
-
-        const newImages: WordProps[] = words
-            .filter((word) => wordList.find(o => o.word === word) && !displayedWords.has(word))
-            .map((word) => wordList.find(o => o.word === word)!)
-            .filter((item): item is WordProps => item !== undefined); // 타입 보장
-
-        if (newImages.length > 0) {
-            setImagesToShow((prevImages) => [...prevImages, ...newImages]);
-        }
-
         setCaretToEnd(editableDiv.current);
     };
 
@@ -226,7 +199,6 @@ function WriteNow() {
                     onCompositionEnd={(e) => {
                         setIsComposing(false);
                         setInputText(e.currentTarget.innerText);
-                        setEditableHtml(e.currentTarget.innerHTML); // HTML 업데이트
                         checkText();  // 조합이 끝난 후 `checkText` 호출
                     }}
                     ref={editableDiv}
