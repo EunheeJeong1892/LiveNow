@@ -84,7 +84,7 @@
 
 .menuLogo {
   cursor:pointer;
-  width:200px;
+  max-width:200px;
   height:60px;
   z-index: 600;
   margin-right:24px;
