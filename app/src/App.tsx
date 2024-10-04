@@ -25,8 +25,7 @@ function App() {
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }
-                const data = await response.json();
-                // Recoil Atom에 데이터 저장
+                const data = await response.json()
                 setAnswerList(data);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -40,6 +39,7 @@ function App() {
                     throw new Error('Failed to fetch data');
                 }
                 const data = await response.json();
+                console.log(data)
                 setWordList(data);
             } catch (error) {
                 console.error('Error fetching data:', error);

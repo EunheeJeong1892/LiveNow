@@ -31,6 +31,7 @@ function WriteNow() {
 
     useEffect(() => {
         setPlaceholderNum(Math.floor(Math.random() * placeholders.length))
+
     }, []); // 빈 배열을 의존성으로 전달하면 처음 한 번만 실행됨
 
     useEffect(() => {

@@ -1,14 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Header from "../components/header";
 import styles from "../css/common.module.css";
-import {ReadCardProps, WordsWithImagesProps} from "../types/types";
+import {WordsWithImagesProps} from "../types/types";
 import ReadCard from "../components/readCard";
 import {Helmet} from "react-helmet-async";
-import {QUESTIONS} from "../constants/constants";
 import {useRecoilValue} from "recoil";
 import {answersAtom} from "../atoms";
-import {Card} from "aws-sdk/clients/qapps";
-import readCard from "../components/readCard";
 function ReadNow() {
     //const [cards, setCards] = useState<any[]>([]);
     const listContainerRef = useRef<HTMLDivElement>(null); // 스크롤을 조정할 컨테이너 참조
@@ -19,27 +16,8 @@ function ReadNow() {
 
     // 카드 클릭 핸들러
     const handleCardClick = (id: number) => {
-        console.log("handleCardClick", id);
         setSelectedCardId(id); // 클릭된 카드의 ID를 상태로 설정
     };
-
-    useEffect(() => {
-        if (selectedCardId !== null && listContainerRef.current) {
-            const cardElements = listContainerRef.current.children; // 카드 요소들을 가져옵니다.
-            const selectedCard = cardElements[selectedCardId] as HTMLElement; // 선택된 카드 요소
-
-            if (selectedCard) {
-                // 선택된 카드의 위치 계산
-                const containerHeight = listContainerRef.current.clientHeight;
-                const cardHeight = selectedCard.clientHeight;
-
-                // 스크롤 위치 계산 (중앙에 오도록)
-                const scrollPosition = selectedCard.offsetTop - (containerHeight / 2) + (cardHeight / 2);
-                listContainerRef.current.scrollTo({ top: scrollPosition, behavior: 'smooth' }); // 부드러운 스크롤
-            }
-        }
-    }, [selectedCardId]); // selectedCardId가 변경될 때마다 실행
-
 
     useEffect(() => {
         if (cards.length > 0 && !hasScrolled) {
@@ -67,24 +45,6 @@ function ReadNow() {
         if (matchedIdxes.length > 0) {
             const randomNum = Math.floor(Math.random() * matchedIdxes.length)
             handleCardClick(matchedIdxes[randomNum])
-            if(listContainerRef.current){
-                console.log("A")
-                const cardElements = listContainerRef.current.children; // 카드 요소들을 가져옵니다.
-                const selectedCard = cardElements[matchedIdxes[randomNum]] as HTMLElement; // 선택된 카드 요소
-                console.log(cardElements)
-                console.log(matchedIdxes[randomNum])
-                if (selectedCard) {
-                    console.log("C")
-                    // 선택된 카드의 위치 계산
-                    const containerHeight = listContainerRef.current.clientHeight;
-                    const cardHeight = selectedCard.clientHeight;
-
-                    // 스크롤 위치 계산 (중앙에 오도록)
-                    const scrollPosition = selectedCard.offsetTop - (containerHeight / 2) + (cardHeight / 2) * 2;
-                    console.log(scrollPosition)
-                    window.scrollTo({ top: matchedIdxes[randomNum]*200 + 400, behavior: 'smooth' })
-                }
-            }
         }
     };
 
