@@ -6,26 +6,27 @@ import ReadCard from "../components/readCard";
 import {Helmet} from "react-helmet-async";
 import {useRecoilValue} from "recoil";
 import {answersAtom} from "../atoms";
-function ReadNow() {
-    //const [cards, setCards] = useState<any[]>([]);
-    const listContainerRef = useRef<HTMLDivElement>(null); // 스크롤을 조정할 컨테이너 참조
-    const [hasScrolled, setHasScrolled] = useState(false); // 첫 실행 여부 저장
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Outcome from "../components/outcome";
 
+function ReadNow() {
+    const listContainerRef = useRef<HTMLDivElement>(null); // 스크롤을 조정할 컨테이너 참조
+    const slider = useRef<Slider>(null);
     const [selectedCardId, setSelectedCardId] = useState<number | null>(null); // 추가된 상태
     const cards = useRecoilValue(answersAtom);
+    const cardLen = cards.length
+    const [showOutcome, setShowOutcome] = useState<boolean>(false); // Outcome 표시 상태
+    const [outcomeData, setOutcomeData] = useState<{ message: string; wordsWithImages: WordsWithImagesProps[] } | null>(null); // 추가
 
     // 카드 클릭 핸들러
     const handleCardClick = (id: number) => {
         setSelectedCardId(id); // 클릭된 카드의 ID를 상태로 설정
-    };
-
-    useEffect(() => {
-        if (cards.length > 0 && !hasScrolled) {
-            window.scrollTo({ top: document.body.scrollHeight});
-            handleCardClick(cards.length - 1)
-            setHasScrolled(true); // 한 번 스크롤 후 true로 변경하여 다시 실행되지 않도록
+        if(slider.current) {
+            slider.current.slickGoTo(id)
         }
-    }, [cards,hasScrolled,  handleCardClick]);
+    };
 
     const [selectedWord, setSelectedWord] = useState<string | null>(null); // 클릭된 단어 상태
 
@@ -48,29 +49,68 @@ function ReadNow() {
         }
     };
 
+    const handlePlayBtn = (event: React.MouseEvent) => {
+        event.stopPropagation(); // 다른 클릭 이벤트가 발생하지 않도록 차단
+        setShowOutcome(true);
+    };
+
+    var settings = {
+        dots: false,
+        infinite: false,
+        autoplay:false,
+        speed: 500,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        arrows: false,
+        initialSlide: 1,
+        centerMode: true,
+        centerPadding: "120px",
+    };
+
+    // // 카드가 변경될 때마다 슬라이더를 업데이트
+    // useEffect(() => {
+    //     if (slider.current && cardLen > 0) {
+    //         const initialSlide = Math.max(0, cardLen - 2); // 0보다 작지 않도록 설정
+    //         slider.current.slickGoTo(initialSlide); // 슬라이더를 초기화
+    //     }
+    // }, [cardLen]); // cardLen이 변경될 때마다 호출
+
+    const handlePlayBtnClick = (message: string, wordsWithImages: WordsWithImagesProps[]) => {
+        setShowOutcome(true); // Outcome을 보여줌
+        // 상태에 데이터 저장 (아래에서 사용할 것)
+        setOutcomeData({ message, wordsWithImages });
+    };
 
     return (
         <div>
+            {showOutcome && outcomeData && <Outcome images={outcomeData.wordsWithImages} message={outcomeData.message} />} {/* Outcome 컴포넌트를 동적으로 렌더링 */}
             <Header title={"readNow"} />
             <Helmet>
                 <title>Read Now</title>
             </Helmet>
             <div ref={listContainerRef} className={styles.readCardList}>
-                {cards.map((card, idx) => {
-                    return (<ReadCard
-                            key={idx}
-                            id={idx}
-                            questionId={card.questionID}
-                            message={card.message}
-                            regDate={card.registDate}
-                            wordsWithImages={card.wordsWithImages}
-                            onClick={() => handleCardClick(idx)} // 카드 클릭 시 호출
-                            isSelected={selectedCardId === idx} // 선택된 카드인지 여부 전달
-                            onWordClick={handleWordClick} // 단어 클릭 핸들러 전달
-                            selectedWord={selectedWord} // 현재 선택된 단어 전달
-                        />
-                    );
-                })}
+                <Slider {...settings} ref={slider}>
+
+
+                    {cards.map((card, idx) => {
+                        return (
+                            <div key={idx} className={styles.readCard}>
+                            <ReadCard
+                                id={idx}
+                                questionId={card.questionID}
+                                message={card.message}
+                                regDate={card.registDate}
+                                wordsWithImages={card.wordsWithImages}
+                                onClick={() => handleCardClick(idx)} // 카드 클릭 시 호출
+                                isSelected={selectedCardId === idx} // 선택된 카드인지 여부 전달
+                                onWordClick={handleWordClick} // 단어 클릭 핸들러 전달
+                                selectedWord={selectedWord} // 현재 선택된 단어 전달
+                                onPlayBtnClick={handlePlayBtnClick}
+                            />
+                            </div>
+                        );
+                    })}
+                </Slider>
             </div>
         </div>
     );

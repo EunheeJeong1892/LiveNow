@@ -30,11 +30,10 @@ function WriteNow() {
     const [hasSubmitted, setHasSubmitted] = useState(false); // 방어 코드 추가
     const setProgressBarVisible = useSetRecoilState(progressBarVisibleAtom);
     const [underlinedWordsData, setUnderlinedWordsData] = useState<UnderlinedWord[]>([]); // 단어와 이미지 정보 저장
-    const [caretPosition, setCaretPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
     useEffect(() => {
         setPlaceholderNum(Math.floor(Math.random() * placeholders.length))
-        openModal()
+
     }, []); // 빈 배열을 의존성으로 전달하면 처음 한 번만 실행됨
 
     useEffect(() => {
@@ -42,44 +41,14 @@ function WriteNow() {
     }, [placeholderNum]);
 
     useEffect(() => {
-        localStorage.removeItem("last-text");
+        setPlaceholderNum(Math.floor(Math.random() * placeholders.length))
+        openModal()
+
         if (editableDiv.current) {
             editableDiv.current.focus();
         }
     }, []);
 
-    useEffect(() => {
-        const updateCaretPosition = () => {
-            const selection = window.getSelection();
-            if (!selection || selection.rangeCount === 0) return;
-
-            const range = selection.getRangeAt(0).cloneRange();
-            if (range.startContainer.nodeType === Node.TEXT_NODE) {
-                const rect = range.getBoundingClientRect();
-                setCaretPosition({
-                    top: rect.bottom + window.scrollY,
-                    left: rect.right + window.scrollX,
-                });
-            }
-        };
-
-        // Add input and selectionchange listeners to update caret position
-        const div = editableDiv.current;
-        if (div) {
-            div.addEventListener('input', updateCaretPosition);
-            div.addEventListener('click', updateCaretPosition); // Update position on click
-        }
-
-        document.addEventListener('selectionchange', updateCaretPosition); // Also update position when the selection changes
-
-        return () => {
-            if (div) {
-                div.removeEventListener('input', updateCaretPosition);
-                div.removeEventListener('click', updateCaretPosition);
-            }
-            document.removeEventListener('selectionchange', updateCaretPosition);
-        };
-    }, []);
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
@@ -90,15 +59,9 @@ function WriteNow() {
         }
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (!isComposing && e.key === "Enter") {
-            e.preventDefault();  // 기본 Enter 동작 방지
-            e.stopPropagation(); // 이벤트 전파 방지
-            if(inputText.trim() !== ""){
-                postAnswer(placeholderNum + 1, inputText.trim());
-            }
-        }
-    };
+    const handleEnterBtn = () => {
+        postAnswer(placeholderNum + 1, inputText.trim());
+    }
 
     const uniqueWords = (array: UnderlinedWord[]) => {
         const seen = new Set<string>(); // Set to track seen words
@@ -232,11 +195,11 @@ function WriteNow() {
 
     return (
         <>
-            {showOutcome && <Outcome images={underlinedWordsData} message={inputText} />} {/* Outcome 컴포넌트를 동적으로 렌더링 */}
-        <Helmet>
-            <title>Write Now</title>
-        </Helmet>
-        <Header title={"writeNow"}></Header>
+            {showOutcome && <Outcome images={underlinedWordsData} message={inputText}/>} {/* Outcome 컴포넌트를 동적으로 렌더링 */}
+            <Helmet>
+                <title>Write Now</title>
+            </Helmet>
+            <Header title={"writeNow"}></Header>
             <div className={styles.typeNowContainer}>
                 <div
                     className={`${styles.originalQuestion} ${inputText ? styles.originalQuestionVisible : ''}`}>{placeholder}</div>
@@ -252,24 +215,8 @@ function WriteNow() {
                         checkText();  // 조합이 끝난 후 `checkText` 호출
                     }}
                     ref={editableDiv}
-                    onKeyDown={handleKeyDown}
                     data-placeholder={`${placeholder}`}
                 ></div>
-                {inputText && (
-                <img
-                    src={"ic_enter.svg"}
-                    alt="Enter Icon"
-                    style={{
-                        position: 'absolute',
-                        top: caretPosition.top,
-                        left: caretPosition.left,
-                        width: '45px',
-                        height: '45px',
-                        transform: 'translate(0, -50%)', // Adjust icon placement near the cursor
-                        pointerEvents: 'none', // Make sure the icon doesn’t interfere with typing
-                    }}
-                />
-                )}
                 <div className="popup" id="popup">
                     {popupImages.map((image, index) => (
                         <img
@@ -282,6 +229,12 @@ function WriteNow() {
                         />
                     ))}
                 </div>
+            </div>
+            <div onClick={handleEnterBtn} className={styles.floatAddBtn}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35" fill="none">
+                    <path d="M2 22.7933L13.6355 34M2 22.7933L13.6355 11.5866M2 22.7933L34 22.7933L34 4.05312e-06"
+                          stroke="black" strokeWidth="2"/>
+                </svg>
             </div>
             <IntroModal isOpen={isModalOpen} onClose={closeModal}></IntroModal>
         </>

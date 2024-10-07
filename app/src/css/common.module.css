@@ -150,7 +150,7 @@
   max-width: 1920px;
   font-family: "Noto Sans KR", sans-serif;
   font-optical-sizing: auto;
-  font-weight: 500;
+  font-weight: 350;
   font-style: normal;
   z-index: 20;
   position: relative;
@@ -216,6 +216,58 @@
     opacity: 1;
   }
 }
+  color: #000;
+  font-family: "Noto Sans CJK KR";
+  font-size: 20px;
+  line-height: 50px;
+  letter-spacing: -0.6px;
+  border-radius: 3px;
+  background: #FFF;
+  box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.06);
+  width: fit-content;
+  padding: 0 9px;
+  margin-bottom: 6px;
+
+}
+.typeNowContainer .originalQuestionVisible{
+  visibility: visible;
+  animation: fadein 3s;
+  -moz-animation: fadein 3s; /* Firefox */
+  -webkit-animation: fadein 3s; /* Safari and Chrome */
+  -o-animation: fadein 3s; /* Opera */
+}
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-moz-keyframes fadein { /* Firefox */
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes fadein { /* Safari and Chrome */
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-o-keyframes fadein { /* Opera */
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 .popupImage {
   position: absolute;
   max-width: 300px;
@@ -228,74 +280,60 @@
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.10);
 }
 
+.readCard{
+  margin: 0; /* 카드 간의 마진을 제거하여 겹치는 문제 해결 */
+  padding: 0; /* 카드 패딩도 제거 */
+  width: 100%; /* 카드가 슬라이더의 너비를 차지하도록 설정 */
+  display: flex; /* 수직 정렬을 위한 flex 설정 */
+  justify-content: center; /* 수평 정렬을 위한 설정 */
+}
+
 .readCardList {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px;
-  flex-shrink: 0;
-  margin:0px 40px;
-  overflow-y: auto;
-  height:calc(100% - 220px);
-  padding-bottom: 300px;
+  overflow: hidden;
+  width: 100%; /* 슬라이더가 전체 너비를 차지하도록 설정 */
 }
 
 .readCardContainer{
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  align-self: stretch;
+  justify-content: center;
+  align-items: center;
   position: relative;
+  flex-direction: column;
+  gap: 50px;
+  padding: 80px 100px 192px 100px;
+  border-radius: 3px;
+  background: #FFF;
+  box-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0.08);
+  width:1200px;
 }
 
 .readCardHeader{
   display: flex;
-  height: 45px;
   align-items: center;
   align-self: stretch;
-  border-top: 1px solid #999;
-  border-bottom: 0.25px solid #999;
 }
 
 .readCardBody{
   padding: 16px 10px 30px 6px;
   align-self: stretch;
-  border-bottom: 1px solid #000;
   color: #000;
-  font-family: "Noto Sans CJK KR";
-  font-size: 30px;
   font-style: normal;
-  font-weight: 350;
-  line-height: 52px;
-  letter-spacing: -0.9px;
+  font-size: 45px;
+  font-weight: 400;
+  line-height: 80px; /* 177.778% */
+  letter-spacing: -1.35px;
 }
 
 .readCardSelected{
-  background: #F4FFF1 !important;
-
 }
 .readCardBodySelected{
-  font-size: 48px !important;;
-  font-style: normal !important;;
-  font-weight: 400 !important;;
-  line-height: 76px !important;; /* 158.333% */
-  letter-spacing: -1.44px !important;;
 }
 .readCardQuestion {
-  display: flex;
-  padding: 12px 16px 10px 6px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-right: 1px dotted #999;
-  color: #999;
-
-  font-family: Inter;
-  font-size: 19px;
+  font-size: 30px;
   font-style: normal;
   font-weight: 400;
-  line-height: normal;
-  letter-spacing: -0.57px;
+  line-height: 28px; /* 93.333% */
+  letter-spacing: -0.9px;
 }
 
 .readCardDate {
@@ -310,6 +348,14 @@
   font-weight: 400;
   line-height: normal;
   letter-spacing: -0.57px;
+}
+.readCardContainer .circle {
+  fill: #D9D9D9; /* 기본 색상 */
+  transition: fill 0.3s;
+}
+
+.readCardContainer .playButton:hover .circle {
+  fill: #00D364;
 }
 
 .readCardUnderline {
@@ -445,6 +491,10 @@
   bottom:40px;
   right:40px;
   cursor:pointer;
+  transition: background-color 0.3s;
+}
+.floatAddBtn:hover {
+  background-color: #20D877;
 }
 
 .gridWrapper{
@@ -669,6 +719,9 @@ textarea:focus, input:focus{
   }
 }
 
+.introModal{
+  position: relative;
+}
 
 .introModalBox{
   display: flex;
@@ -724,4 +777,17 @@ textarea:focus, input:focus{
   right:4%;
   top:50%;
   transform: translateY(-50%);
+}
+.introModalCloseBtn{
+  position: absolute;
+  top: 0;
+  right: 7%;
+  cursor: pointer;
+}
+
+.introModalBox .underline{
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-position: under;
+  text-decoration-color: #00D364;
 }

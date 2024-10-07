@@ -11,3 +11,29 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.slick-slide{
+  margin-right:90px;
+  cursor: pointer;
+  height: auto !important
+}
+.slick-slide {
+  display: flex; /* 수직 정렬을 위한 설정 */
+  align-items: center;
+  justify-content: center;
+}
+
+
+.slick-list {
+  overflow: hidden; /* 슬라이드 영역 외부가 보이지 않도록 설정 */
+}
+
+.slick-track {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+}
+.slick-slider {
+  overflow: hidden;
+}

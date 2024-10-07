@@ -33,7 +33,10 @@ const Outcome: React.FC<OutcomeProps> = ({ message, images }) => {
 
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
 
+    console.log(message)
+    console.log(images)
     useEffect(() => {
+
         skipRandomMusic()
 
     }, []);

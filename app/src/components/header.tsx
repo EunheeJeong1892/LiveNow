@@ -12,9 +12,9 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
     const [fadeClass, setFadeClass] = useState('');  // fade 애니메이션 클래스 상태
 
     const menus = [
-        { id: 'writeNow', src: 'logo_write', guide:'주어진 질문에 대해 생각해보고 글을 써주세요! 문장을 완성했다면 엔터키를 눌러 나의 기록이 타인의 이미지로 재해석되는 슬라이드를 감상해보세요! 페이지를 새로고침하면 질문이 다른 것으로 변경됩니다.' },
-        { id: 'library', src: 'logo_library', guide: '사이트에 등록된 단어와 이미지를 찾아보고 추가로 등록할 수 있는 라이브러리 페이지입니다. 이미지 카드를 클릭하여 사진이 의미하는 단어와 그에 담긴 이야기를 읽어보세요! 아래에 + 버튼을 눌러 나의 사진과 단어를 등록해주세요.' },
-        { id: 'readNow', src: 'logo_read',guide: 'writeNow에서 작성된 모든 글을 모아보세요! 밑줄이 쳐진 단어를 클릭하면 이전에 같은 단어를 사용한 문장으로 이동합니다.' },
+        { id: 'writeNow', src: 'logo_write', guide:'라이브러리에 등록된 단어를 사용하면 화면에 이미지 카드가 떠오릅니다. 카드 꾸러미는 해당 단어에 여러 이미지가 등록되어 있다는 뜻이에요! 카드를 클릭해 가장 마음에 드는 이미지를 골라보세요. 글을 완성했다면 엔터 아이콘을 클릭해 슬라이드 애니메이션을 감상하세요.' },
+        { id: 'library', src: 'logo_library', guide: '단어와 이미지가 저장된 라이브러리 페이지입니다. 모든 이미지를 톺아보거나 원하는 단어의 이미지만 검색하여 찾아보세요. 우측 하단의 + 아이콘을 눌러 새로운 단어와 이미지를 등록해 주세요.' },
+        { id: 'readNow', src: 'logo_read',guide: 'writeNow에서 작성된 글을 모두 모아보세요! 작성된 순서대로 저장되며 밑줄이 쳐진 단어는 하이퍼 텍스트로 클릭하면 같은 단어가 쓰인 타인의 문장으로 이동하게 됩니다. 다시보기 아이콘을 클릭하면 문장의 슬라이드 애니메이션을 다시 감상할 수 있습니다.' },
     ];
     const handleHamburgerMenu = () => {
         setIsOpen(!isOpen);

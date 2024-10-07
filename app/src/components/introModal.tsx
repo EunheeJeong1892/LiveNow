@@ -35,7 +35,8 @@ const IntroModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             <div>한 단어에 여러가지 이미지가 등록되어 있다면 위와 같이 겹쳐진 카드 모양으로 보여집니다. 클릭하여 여러 사람들의 이미지를 감상하고 가장 마음에 와닿았던 이미지를 찾아보세요. 글을 완성하는 순간, 카드 꾸러미의 가장 위에 올라온 이미지가 최종 선택됩니다.</div>
         </div>,
         <div className={styles.introModalBox}>
-            <div>문장과 단어로 연결되는 우리<br />모두의 기록</div>
+            <div><span className={styles.underline}>문장</span>과 <span className={styles.underline}>단어</span>로 연결되는 <span className={styles.underline}>우리</span><br/>모두의 <span className={styles.underline}>기록</span>
+            </div>
             <div>readNow에서는 writeNow에서 쓰였던 글을 모두 모아볼 수 있습니다. 글을 쓰는 동안 이미지를 불러왔던 단어는 readNow에서는 하이퍼 텍스트가 됩니다. 단어를 클릭하면 같은 단어로 쓰인 다른 글로 랜덤하게 이동하며 마우스를 단어 위로 가져가면 단어에 저장된 이미지를 볼 수 있습니다. 글이 쓰인 후 등록된 이미지와 단어는 이전에 쓰인 기록에 반영되지 않습니다. 지금 여기를 거쳐간 사람들은 어떤 기록을 남겼는지. 나와 같은 단어를 사용한 사람은 어떤 글을 썼는지 읽어보세요!</div>
         </div>,
         <div className={styles.introModalBox}>
@@ -46,7 +47,7 @@ const IntroModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
     return (
         <div className={styles.modalOverlay} onClick={onClose}>
-            <div onClick={(e) => e.stopPropagation()}>
+            <div onClick={(e) => e.stopPropagation()} className={styles.introModal}>
                <div>
                 {slides[currentSlide]} {/* Only render the current slide */}
                </div>
@@ -59,6 +60,7 @@ const IntroModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 {currentSlide === slides.length - 1 && (
                     <img src={"ic_arrow_exit.svg"} onClick={onClose} className={styles.introModalArrowRight}/>
                 )}
+                <img src={"ic_modal_close.svg"} onClick={onClose} className={styles.introModalCloseBtn} alt={"닫기"}/>
             </div>
         </div>
     );
