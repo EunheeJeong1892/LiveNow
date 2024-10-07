@@ -140,6 +140,7 @@
 
 .typeNowContainer{
   margin:0px 40px;
+  position: relative;
 }
 .typeNowContainer .editable {
   outline: none;
@@ -166,7 +167,55 @@
   color: #AFAFAF;
   padding-left:19px;
 }
+.typeNowContainer .originalQuestion{
+  visibility: hidden;
 
+  color: #000;
+  font-family: "Noto Sans CJK KR";
+  font-size: 20px;
+  line-height: 70px;
+  letter-spacing: -0.6px;
+
+}
+.typeNowContainer .originalQuestionVisible{
+  visibility: visible;
+  animation: fadein 3s;
+  -moz-animation: fadein 3s; /* Firefox */
+  -webkit-animation: fadein 3s; /* Safari and Chrome */
+  -o-animation: fadein 3s; /* Opera */
+}
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-moz-keyframes fadein { /* Firefox */
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes fadein { /* Safari and Chrome */
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-o-keyframes fadein { /* Opera */
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 .popupImage {
   position: absolute;
   max-width: 300px;
@@ -331,7 +380,6 @@
   font-weight: 400;
   line-height: 46px; /* 153.333% */
   letter-spacing: -0.9px;
-  text-decoration: underline;
 }
 
 .musicWrapper{
@@ -346,7 +394,7 @@
 }
 
 
-/* LiveNow */
+/* Library */
 .liveNowContainer {
   display: flex;
   flex-direction: column;
@@ -367,7 +415,7 @@
 }
 
 
-/* LiveNow */
+/* Library */
 .imageGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -409,6 +457,7 @@
   letter-spacing: -2.19px;
   border:none;
   outline:none;
+  width:100%;
 }
 .liveNowSearch::placeholder{
   color: #AFAFAF;
@@ -618,4 +667,61 @@ textarea:focus, input:focus{
   100% {
     width: 0;
   }
+}
+
+
+.introModalBox{
+  display: flex;
+  width: calc(100% - 640px);
+  height: calc(100% - 280px);
+  padding: 60px 117px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 80px;
+
+  color: #000;
+  font-family: "Noto Sans CJK KR";
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 50px; /* 166.667% */
+  letter-spacing: -0.9px;
+  background-color: white;
+  margin:auto;
+  word-break: keep-all;
+  position: relative;
+}
+.introModalBox div:first-child{
+  color: #000;
+  text-align: center;
+  font-family: "Noto Sans CJK KR";
+  font-size: 45px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 68px; /* 151.111% */
+  letter-spacing: -1.35px;
+}
+.introModalBox img{
+  width:300px;
+  height:300px;
+}
+
+.introModalArrowLeft{
+  width: 80px;
+  height: 120px;
+  position: absolute;
+  cursor: pointer;
+  left:4%;
+  top:50%;
+  transform: translateY(-50%);
+}
+.introModalArrowRight{
+  width: 80px;
+  height: 120px;
+  position: absolute;
+  cursor: pointer;
+  right:4%;
+  top:50%;
+  transform: translateY(-50%);
 }

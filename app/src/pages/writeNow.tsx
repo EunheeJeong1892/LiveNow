@@ -7,6 +7,7 @@ import Outcome from "../components/outcome";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {progressBarVisibleAtom, wordsAtom} from "../atoms";
 import {UnderlinedWord, WordProps} from "../types/types";
+import IntroModal from "../components/introModal";
 
 interface PopupImage {
     src: string;
@@ -15,6 +16,7 @@ interface PopupImage {
 
 
 function WriteNow() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const placeholders = QUESTIONS.map(o => o.message)
     const editableDiv = useRef<HTMLDivElement>(null);
     const [popupImages, setPopupImages] = useState<PopupImage[]>([]);
@@ -28,10 +30,11 @@ function WriteNow() {
     const [hasSubmitted, setHasSubmitted] = useState(false); // 방어 코드 추가
     const setProgressBarVisible = useSetRecoilState(progressBarVisibleAtom);
     const [underlinedWordsData, setUnderlinedWordsData] = useState<UnderlinedWord[]>([]); // 단어와 이미지 정보 저장
+    const [caretPosition, setCaretPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
     useEffect(() => {
         setPlaceholderNum(Math.floor(Math.random() * placeholders.length))
-
+        openModal()
     }, []); // 빈 배열을 의존성으로 전달하면 처음 한 번만 실행됨
 
     useEffect(() => {
@@ -44,6 +47,42 @@ function WriteNow() {
             editableDiv.current.focus();
         }
     }, []);
+
+    useEffect(() => {
+        const updateCaretPosition = () => {
+            const selection = window.getSelection();
+            if (!selection || selection.rangeCount === 0) return;
+
+            const range = selection.getRangeAt(0).cloneRange();
+            if (range.startContainer.nodeType === Node.TEXT_NODE) {
+                const rect = range.getBoundingClientRect();
+                setCaretPosition({
+                    top: rect.bottom + window.scrollY,
+                    left: rect.right + window.scrollX,
+                });
+            }
+        };
+
+        // Add input and selectionchange listeners to update caret position
+        const div = editableDiv.current;
+        if (div) {
+            div.addEventListener('input', updateCaretPosition);
+            div.addEventListener('click', updateCaretPosition); // Update position on click
+        }
+
+        document.addEventListener('selectionchange', updateCaretPosition); // Also update position when the selection changes
+
+        return () => {
+            if (div) {
+                div.removeEventListener('input', updateCaretPosition);
+                div.removeEventListener('click', updateCaretPosition);
+            }
+            document.removeEventListener('selectionchange', updateCaretPosition);
+        };
+    }, []);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
         if (!isComposing) {
@@ -61,13 +100,22 @@ function WriteNow() {
         }
     };
 
-    const postAnswer = async (questionID:number,message:string) => {
+    const uniqueWords = (array: UnderlinedWord[]) => {
+        const seen = new Set<string>(); // Set to track seen words
+        return array.filter((item) => {
+            const word = item.word;
+            if (seen.has(word)) {
+                return false; // If word is already seen, exclude it
+            }
+            seen.add(word); // Mark word as seen
+            return true; // Keep the first occurrence
+        });
+    };
 
+    const postAnswer = async (questionID:number,message:string) => {
         try {
             if (hasSubmitted) return;
             setProgressBarVisible(true);
-
-            setUnderlinedWordsData(underlinedWordsData.sort((a, b) => a.position - b.position))
 
             const response = await fetch('https://tqx65zlmb5.execute-api.ap-northeast-2.amazonaws.com/Answers', {
                 method: 'POST',
@@ -77,7 +125,7 @@ function WriteNow() {
                 body: JSON.stringify({
                     questionID,
                     message,
-                    wordsWithImages:underlinedWordsData
+                    wordsWithImages:uniqueWords(underlinedWordsData.sort((a, b) => a.position - b.position))
                 }),
             });
 
@@ -90,7 +138,6 @@ function WriteNow() {
         } finally {
             setProgressBarVisible(false); // Progress Bar 숨기기
         }
-
     };
 
     const checkText = () => {
@@ -192,6 +239,8 @@ function WriteNow() {
         <Header title={"writeNow"}></Header>
             <div className={styles.typeNowContainer}>
                 <div
+                    className={`${styles.originalQuestion} ${inputText ? styles.originalQuestionVisible : ''}`}>{placeholder}</div>
+                <div
                     id="editable"
                     className={styles.editable}
                     contentEditable="true"
@@ -206,6 +255,21 @@ function WriteNow() {
                     onKeyDown={handleKeyDown}
                     data-placeholder={`${placeholder}`}
                 ></div>
+                {inputText && (
+                <img
+                    src={"ic_enter.svg"}
+                    alt="Enter Icon"
+                    style={{
+                        position: 'absolute',
+                        top: caretPosition.top,
+                        left: caretPosition.left,
+                        width: '45px',
+                        height: '45px',
+                        transform: 'translate(0, -50%)', // Adjust icon placement near the cursor
+                        pointerEvents: 'none', // Make sure the icon doesn’t interfere with typing
+                    }}
+                />
+                )}
                 <div className="popup" id="popup">
                     {popupImages.map((image, index) => (
                         <img
@@ -219,6 +283,7 @@ function WriteNow() {
                     ))}
                 </div>
             </div>
+            <IntroModal isOpen={isModalOpen} onClose={closeModal}></IntroModal>
         </>
     );
 }

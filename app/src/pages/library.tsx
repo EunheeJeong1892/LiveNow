@@ -8,7 +8,7 @@ import {wordsAtom} from "../atoms";
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
 import AddWordModal from "../components/addWordModal";
 
-function LiveNow() {
+function Library() {
     const [inputText, setInputText] = useState<string>(""); // 상태로 텍스트 관리
     const searchDiv = useRef<HTMLInputElement>(null);
     const setWordsAtom = useSetRecoilState(wordsAtom);
@@ -63,7 +63,7 @@ function LiveNow() {
 
     return (
         <>
-            <Header title={"liveNow"}/>
+            <Header title={"library"}/>
             <Helmet>
                 <title>Live Now</title>
             </Helmet>
@@ -111,4 +111,4 @@ function LiveNow() {
         ;
 }
 
-export default LiveNow;
+export default Library;

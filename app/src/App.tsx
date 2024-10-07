@@ -4,7 +4,7 @@ import './App.css';
 import {BrowserRouter, Route, Routes, Navigate} from "react-router-dom";
 
 import WriteNow from "./pages/writeNow";
-import LiveNow from "./pages/liveNow";
+import Library from "./pages/library";
 import ReadNow from "./pages/readNow";
 import {HelmetProvider} from "react-helmet-async";
 import Intro from "./pages/intro";
@@ -39,7 +39,6 @@ function App() {
                     throw new Error('Failed to fetch data');
                 }
                 const data = await response.json();
-                console.log(data)
                 setWordList(data);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -58,7 +57,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/intro" />} />
                 <Route path="/intro" element={<Intro />} />
                 <Route path="/writeNow" element={<WriteNow />} />
-                <Route path="/liveNow" element={<LiveNow />} />
+                <Route path="/library" element={<Library />} />
                 <Route path="/readNow" element={<ReadNow />} />
             </Routes>
           </BrowserRouter>

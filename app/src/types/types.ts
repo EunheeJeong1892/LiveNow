@@ -17,7 +17,7 @@ export interface ReadCardProps {
 }
 
 
-type TitleType = "writeNow" | "liveNow" | "readNow";
+type TitleType = "writeNow" | "library" | "readNow";
 export interface HeaderProps {
     title: TitleType;
 }
