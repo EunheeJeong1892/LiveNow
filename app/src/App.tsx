@@ -19,7 +19,7 @@ function App() {
     const isVisible = useRecoilValue(progressBarVisibleAtom);
 
     useEffect(() => {
-        const fetchAnnwers = async () => {
+        const fetchAnswers = async () => {
             try {
                 const response = await fetch('https://tqx65zlmb5.execute-api.ap-northeast-2.amazonaws.com/Answers');
                 if (!response.ok) {
@@ -45,7 +45,7 @@ function App() {
             }
         };
 
-        fetchAnnwers();
+        fetchAnswers();
         fetchWords();
     }, [setAnswerList,setWordList]);
 

@@ -8,6 +8,7 @@ import {useRecoilValue, useSetRecoilState} from "recoil";
 import {progressBarVisibleAtom, wordsAtom} from "../atoms";
 import {UnderlinedWord, WordProps} from "../types/types";
 import IntroModal from "../components/introModal";
+import {useNavigate} from "react-router-dom";
 
 interface PopupImage {
     src: string;
@@ -30,11 +31,6 @@ function WriteNow() {
     const [hasSubmitted, setHasSubmitted] = useState(false); // 방어 코드 추가
     const setProgressBarVisible = useSetRecoilState(progressBarVisibleAtom);
     const [underlinedWordsData, setUnderlinedWordsData] = useState<UnderlinedWord[]>([]); // 단어와 이미지 정보 저장
-
-    useEffect(() => {
-        setPlaceholderNum(Math.floor(Math.random() * placeholders.length))
-
-    }, []); // 빈 배열을 의존성으로 전달하면 처음 한 번만 실행됨
 
     useEffect(() => {
         setPlaceholder(placeholders[placeholderNum]);
@@ -149,8 +145,8 @@ function WriteNow() {
     };
 
     const showPopupImage = (word: string, finded: WordProps[]) => {
-        const randomX = Math.random() * (window.innerWidth - 200);
-        const randomY = Math.random() * (window.innerHeight - 200) + 60;
+        const randomX =  Math.max(0,Math.random() * (window.innerWidth - 500));
+        const randomY = Math.max(0, Math.random() * (window.innerHeight - 200) - 180);
 
         setPopupImages((prev) => {
             const baseLeft = randomX;
@@ -191,11 +187,15 @@ function WriteNow() {
             el.focus();
         }
     };
+    const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
 
+    const handleOutcomeEnd = () => {
+        navigate(0)
+    }
 
     return (
         <>
-            {showOutcome && <Outcome images={underlinedWordsData} message={inputText}/>} {/* Outcome 컴포넌트를 동적으로 렌더링 */}
+            {showOutcome && <Outcome images={underlinedWordsData} message={inputText} endCallback={handleOutcomeEnd}/>} {/* Outcome 컴포넌트를 동적으로 렌더링 */}
             <Helmet>
                 <title>Write Now</title>
             </Helmet>

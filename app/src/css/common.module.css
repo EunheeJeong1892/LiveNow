@@ -117,6 +117,7 @@
   right: 50px;
   top: 120px;
   color:#ffffff;
+  word-break: keep-all;
 }
 
 /* guideContainer의 기본 상태 */
@@ -232,17 +233,18 @@
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.10);
 }
 
-.readCard{
-  margin: 0; /* 카드 간의 마진을 제거하여 겹치는 문제 해결 */
-  padding: 0; /* 카드 패딩도 제거 */
-  width: 100%; /* 카드가 슬라이더의 너비를 차지하도록 설정 */
-  display: flex; /* 수직 정렬을 위한 flex 설정 */
-  justify-content: center; /* 수평 정렬을 위한 설정 */
+
+.readCard {
+  width: 80%; /* 각 카드의 너비 */
+  margin: 0 auto; /* 카드 중앙 정렬 */
+  transition: transform 0.3s ease-in-out; /* 부드러운 전환 효과 */
 }
 
 .readCardList {
+  width: 100%;
   overflow: hidden;
-  width: 100%; /* 슬라이더가 전체 너비를 차지하도록 설정 */
+  padding: 0; /* 여백 제거 */
+  box-sizing: border-box;
 }
 
 .readCardContainer{
@@ -256,7 +258,7 @@
   border-radius: 3px;
   background: #FFF;
   box-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0.08);
-  width:1200px;
+  min-width:1000px;
 }
 
 .readCardHeader{
@@ -269,43 +271,28 @@
   padding: 16px 10px 30px 6px;
   align-self: stretch;
   color: #000;
-  font-style: normal;
   font-size: 45px;
-  font-weight: 400;
   line-height: 80px; /* 177.778% */
   letter-spacing: -1.35px;
 }
-
-.readCardSelected{
-}
-.readCardBodySelected{
-}
 .readCardQuestion {
   font-size: 30px;
-  font-style: normal;
-  font-weight: 400;
   line-height: 28px; /* 93.333% */
   letter-spacing: -0.9px;
+  margin-right:30px;
 }
-
 .readCardDate {
-  display: flex;
-  padding: 12px 16px 10px 16px;
-  align-items: center;
-  gap: 10px;
   color: #999;
-  font-family: Inter;
   font-size: 19px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
   letter-spacing: -0.57px;
 }
 .readCardContainer .circle {
   fill: #D9D9D9; /* 기본 색상 */
   transition: fill 0.3s;
 }
-
+.readCardContainer .playButton{
+  margin-left:auto;
+}
 .readCardContainer .playButton:hover .circle {
   fill: #00D364;
 }
@@ -363,6 +350,7 @@
   position: absolute;
   top: 0;
   left: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 0%, rgba(0, 0, 0, 0.50) 100%);
 }
 
 .subtitle {
@@ -453,6 +441,9 @@
   margin-top:60px;
 }
 
+.liveNowSearchWrapper{
+  position: relative;
+}
 .liveNowSearch{
   font-size: 45px;
   font-weight: 300;
@@ -460,6 +451,7 @@
   border:none;
   outline:none;
   width:100%;
+  padding-right: -40px; /* 아이콘 공간을 위해 여백 추가 */
 }
 .liveNowSearch::placeholder{
   color: #AFAFAF;
@@ -470,6 +462,16 @@
 .liveNowSearchActive, .liveNowSearch:focus{
   border-bottom: 2px solid #000;
   outline:none;
+}
+.searchIcon {
+  position: absolute;
+  right: 0px; /* 아이콘을 오른쪽에 위치 */
+  top: 50%; /* 세로 중앙 정렬 */
+  transform: translateY(-50%); /* 수직 중앙 정렬 */
+  pointer-events: none; /* 클릭 이벤트 방지 */
+}
+.searchIcon img{
+  width:40px;
 }
 
 .liveNowImageContent{
@@ -484,11 +486,22 @@
   left: 0;
   right: 0;
   bottom: 0;
+  width:240px;
 }
 .gridItem:hover .liveNowImageContent {
   display: flex; /* 상위 요소를 hover하면 표시 */
+  border-radius: 3px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.00) 54%, rgba(0, 0, 0, 0.60) 100%);
 }
 .gridItem:hover img{
+}
+
+.noContent{
+  color: #CBCBCB;
+  font-size: 73px;
+  font-weight: 300;
+  letter-spacing: -2.19px;
+  width:100%;
 }
 
 .liveNowImageWord{
@@ -513,7 +526,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* 어두운 배경 */
+  background-color: rgba(0, 0, 0, 0.3); /* 어두운 배경 */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -677,8 +690,9 @@ textarea:focus, input:focus{
 
 .introModalBox{
   display: flex;
-  width: 52%;
+  width: 50%;
   height: calc(100% - 280px);
+  box-shadow: 0px 4px 40px 0px rgba(0, 0, 0, 0.10);
   padding: 60px 117px;
   flex-direction: column;
   align-items: center;

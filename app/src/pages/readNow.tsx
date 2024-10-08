@@ -4,9 +4,9 @@ import styles from "../css/common.module.css";
 import {WordsWithImagesProps} from "../types/types";
 import ReadCard from "../components/readCard";
 import {Helmet} from "react-helmet-async";
-import {useRecoilValue} from "recoil";
+import {useRecoilValue, useSetRecoilState} from "recoil";
 import {answersAtom} from "../atoms";
-import Slider, {LazyLoadTypes} from "react-slick";
+import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Outcome from "../components/outcome";
@@ -16,9 +16,9 @@ function ReadNow() {
     const slider = useRef<Slider>(null);
     const [selectedCardId, setSelectedCardId] = useState<number | null>(null); // 추가된 상태
     const cards = useRecoilValue(answersAtom);
-    const cardLen = cards.length
     const [showOutcome, setShowOutcome] = useState<boolean>(false); // Outcome 표시 상태
     const [outcomeData, setOutcomeData] = useState<{ message: string; wordsWithImages: WordsWithImagesProps[] } | null>(null); // 추가
+    const setAnswerList = useSetRecoilState(answersAtom);
 
     // 카드 클릭 핸들러
     const handleCardClick = (id: number) => {
@@ -27,6 +27,26 @@ function ReadNow() {
             slider.current.slickGoTo(id)
         }
     };
+
+    useEffect(() => {
+        const fetchAnswers = async () => {
+            try {
+                const response = await fetch('https://tqx65zlmb5.execute-api.ap-northeast-2.amazonaws.com/Answers');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+                const data = await response.json()
+                setAnswerList(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        if (cards.length === 0) { // wordsAtom에 값이 없을 때만 API 호출
+            fetchAnswers(); // 데이터 가져오기
+        }
+    }, [setAnswerList, cards]);
+
 
     const [selectedWord, setSelectedWord] = useState<string | null>(null); // 클릭된 단어 상태
 
@@ -49,31 +69,26 @@ function ReadNow() {
         }
     };
 
-    const handlePlayBtn = (event: React.MouseEvent) => {
-        event.stopPropagation(); // 다른 클릭 이벤트가 발생하지 않도록 차단
-        setShowOutcome(true);
-    };
-
     var settings = {
         dots: false,
         infinite: false,
-        autoplay:false,
+        autoplay: false,
         speed: 500,
-        slidesToShow: 3,
+        slidesToShow: 1,
         slidesToScroll: 1,
         arrows: false,
-        initialSlide: 1,
         centerMode: true,
-        centerPadding: "120px",
+        initialSlide: cards.length -1,
+        centerPadding: "10%", // Ensure side cards show 120px on both sides
     };
 
-    // // 카드가 변경될 때마다 슬라이더를 업데이트
-    // useEffect(() => {
-    //     if (slider.current && cardLen > 0) {
-    //         const initialSlide = Math.max(0, cardLen - 2); // 0보다 작지 않도록 설정
-    //         slider.current.slickGoTo(initialSlide); // 슬라이더를 초기화
-    //     }
-    // }, [cardLen]); // cardLen이 변경될 때마다 호출
+    // 카드가 변경될 때마다 슬라이더를 업데이트
+    useEffect(() => {
+        if (slider.current && cards.length > 0) {
+            const initialSlide = Math.max(0, cards.length - 1); // 0보다 작지 않도록 설정
+            slider.current.slickGoTo(initialSlide); // 슬라이더를 초기화
+        }
+    }, [cards]); // cardLen이 변경될 때마다 호출
 
     const handlePlayBtnClick = (message: string, wordsWithImages: WordsWithImagesProps[]) => {
         setShowOutcome(true); // Outcome을 보여줌
@@ -81,32 +96,34 @@ function ReadNow() {
         setOutcomeData({ message, wordsWithImages });
     };
 
+    const handleOutcomeEnd = () => {
+        setShowOutcome(false)
+    }
+
     return (
         <div>
-            {showOutcome && outcomeData && <Outcome images={outcomeData.wordsWithImages} message={outcomeData.message} />} {/* Outcome 컴포넌트를 동적으로 렌더링 */}
+            {showOutcome && outcomeData && <Outcome images={outcomeData.wordsWithImages} message={outcomeData.message} endCallback={handleOutcomeEnd} />} {/* Outcome 컴포넌트를 동적으로 렌더링 */}
             <Header title={"readNow"} />
             <Helmet>
                 <title>Read Now</title>
             </Helmet>
             <div ref={listContainerRef} className={styles.readCardList}>
                 <Slider {...settings} ref={slider}>
-
-
                     {cards.map((card, idx) => {
                         return (
                             <div key={idx} className={styles.readCard}>
-                            <ReadCard
-                                id={idx}
-                                questionId={card.questionID}
-                                message={card.message}
-                                regDate={card.registDate}
-                                wordsWithImages={card.wordsWithImages}
-                                onClick={() => handleCardClick(idx)} // 카드 클릭 시 호출
-                                isSelected={selectedCardId === idx} // 선택된 카드인지 여부 전달
-                                onWordClick={handleWordClick} // 단어 클릭 핸들러 전달
-                                selectedWord={selectedWord} // 현재 선택된 단어 전달
-                                onPlayBtnClick={handlePlayBtnClick}
-                            />
+                                <ReadCard
+                                    id={idx}
+                                    questionId={card.questionID}
+                                    message={card.message}
+                                    regDate={card.registDate}
+                                    wordsWithImages={card.wordsWithImages}
+                                    onClick={() => handleCardClick(idx)} // 카드 클릭 시 호출
+                                    isSelected={selectedCardId === idx} // 선택된 카드인지 여부 전달
+                                    onWordClick={handleWordClick} // 단어 클릭 핸들러 전달
+                                    selectedWord={selectedWord} // 현재 선택된 단어 전달
+                                    onPlayBtnClick={handlePlayBtnClick}
+                                />
                             </div>
                         );
                     })}

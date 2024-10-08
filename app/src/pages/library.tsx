@@ -16,6 +16,7 @@ function Library() {
     const [filteredWords, setFilteredWords] = useState<WordProps[]>(words); // 필터된 이미지 상태
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [visibleCount, setVisibleCount] = useState<number>(28); // 현재 보이는 이미지 수
+    const [isFocused, setIsFocused] = useState<boolean>(false); // 포커스 상태
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
@@ -61,6 +62,33 @@ function Library() {
         setVisibleCount((prevCount) => prevCount + 28);
     };
 
+    const [columns, setColumns] = useState(1);
+
+    const updateColumns = () => {
+        const width = window.innerWidth;
+
+        if (width < 600) {
+            setColumns(1);
+        } else if (width >= 600 && width < 900) {
+            setColumns(2);
+        } else if (width >= 900 && width < 1300) {
+            setColumns(3);
+        } else if (width >= 1300 && width < 1500) {
+            setColumns(4);
+        } else if (width >= 1500 && width < 1920) {
+            setColumns(5);
+        } else {
+            setColumns(5);
+        }
+    };
+
+    useEffect(() => {
+        updateColumns(); // 초기 컬럼 수 설정
+        window.addEventListener('resize', updateColumns); // 창 크기 변경 감지
+
+        return () => window.removeEventListener('resize', updateColumns); // 컴포넌트 언마운트 시 이벤트 제거
+    }, []);
+
     return (
         <>
             <Header title={"library"}/>
@@ -68,11 +96,20 @@ function Library() {
                 <title>Live Now</title>
             </Helmet>
             <div className={styles.typeNowContainer}>
-                <input type={"text"} onChange={handleInput} placeholder={`검색어를 입력하세요.`} ref={searchDiv} className={`${styles.liveNowSearch} ${inputText ? styles.liveNowSearchActive : ''}`} />
+                <div className={styles.liveNowSearchWrapper}>
+                    <input type={"text"} onChange={handleInput} placeholder={`검색어를 입력하세요.`} ref={searchDiv} className={`${styles.liveNowSearch} ${inputText ? styles.liveNowSearchActive : ''}`}
+                           onFocus={() => setIsFocused(true)}
+                           onBlur={() => setIsFocused(false)} />
+                    {(isFocused || inputText) && (
+                        <div className={styles.searchIcon}>
+                            <img src={"ic_search.png"} alt="Search" />
+                        </div>
+                    )}
+                </div>
                 <div className={styles.gridWrapper} >
-                    <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3, 1200: 4, 2000:5, 3000:6 }}>
-                        <Masonry gutter="38px">
-                            {filteredWords.length > 0 ? (
+                    <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 900: 3, 1400: 4, 1700: 5}} >
+                        <Masonry gutter="15px" columnsCount={columns} >
+                            {filteredWords.length > 0 && (
                                 filteredWords.map((word, index) => (
                                     <div key={index} className={styles.gridItem}>
                                         <img
@@ -86,12 +123,11 @@ function Library() {
                                         </div>
                                     </div>
                                 ))
-                            ) :
-                                (
-                                <p>아직 등록되지 않은 단어입니다.<br/>아래의 + 버튼을 눌러 처음으로 단어를 등록해보세요!</p>
                             )}
                         </Masonry>
                     </ResponsiveMasonry>
+                    {filteredWords.length === 0 && (
+                    <p className={styles.noContent}>아직 등록되지 않은 단어입니다.<br/>아래의 + 버튼을 눌러 처음으로 단어를 등록해보세요!</p>)}
                 </div>
                 {!inputText && filteredWords.length < words.length && ( // 더보기 버튼 조건부 렌더링
                     <button onClick={loadMoreWords} className={styles.loadMoreButton}>

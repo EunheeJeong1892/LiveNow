@@ -12,28 +12,15 @@ code {
     monospace;
 }
 
-.slick-slide{
-  margin-right:90px;
-  cursor: pointer;
-  height: auto !important
+.slick-list {
+  margin : 0px -40px !important;
+  padding: 0 0; /* 슬라이드 리스트의 여백 제거 */
 }
 .slick-slide {
-  display: flex; /* 수직 정렬을 위한 설정 */
-  align-items: center;
-  justify-content: center;
+  opacity: 1; /* 모든 슬라이드가 동일하게 보이도록 설정 */
+  margin : 0px 40px !important;
 }
-
-
-.slick-list {
-  overflow: hidden; /* 슬라이드 영역 외부가 보이지 않도록 설정 */
-}
-
 .slick-track {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  align-items: stretch !important;
-}
-.slick-slider {
-  overflow: hidden;
+  display: flex !important; /* 슬라이드 트랙을 flexbox로 설정 */
+  align-items: center; /* 수직 중앙 정렬 */
 }

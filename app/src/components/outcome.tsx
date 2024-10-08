@@ -6,6 +6,7 @@ import {UnderlinedWord, WordProps} from "../types/types";
 interface OutcomeProps {
     message: string,
     images: UnderlinedWord[];  // 이미지 URL 배열
+    endCallback: () => void;
 }
 
 
@@ -23,7 +24,7 @@ const musicTracks = [
     "Summer Symphony Ball - Sir Cubworth.mp3"
 ];
 
-const Outcome: React.FC<OutcomeProps> = ({ message, images }) => {
+const Outcome: React.FC<OutcomeProps> = ({ message, images,endCallback }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [sliderEnded, setSliderEnded] = useState(false); // 슬라이더 종료 상태를 추적
     const [showBlackScreen, setShowBlackScreen] = useState(false); // 검정 화면 표시 상태
@@ -31,10 +32,6 @@ const Outcome: React.FC<OutcomeProps> = ({ message, images }) => {
     const [currentBgmTitle, setCurrentBgmTitle] = useState<string>("");
     const [isPlaying, setIsPlaying] = useState(false); // 오디오 상태 관리
 
-    const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
-
-    console.log(message)
-    console.log(images)
     useEffect(() => {
 
         skipRandomMusic()
@@ -45,16 +42,19 @@ const Outcome: React.FC<OutcomeProps> = ({ message, images }) => {
             setShowBlackScreen(true)
             // 이미지가 없을 때 3초 후 검정 화면 숨기기
             const timeout = setTimeout(() => {
-                navigate(0);
-            }, 10000); // 3초 후
+                pauseRandomMusic()
+                endCallback()
+            }, 10000); // 10초 후
 
             return () => clearTimeout(timeout); // 컴포넌트 언마운트 시 타이머 클리어
         }
         if (sliderEnded) {
-            navigate(0); // 슬라이더가 끝난 후 이동
+            pauseRandomMusic()
+            endCallback()
             return;
         }
 
+        const intervalTime = currentImageIndex === images.length - 1 ? 5000 : 3000; // 5초 또는 3초
         const interval = setInterval(() => {
             setCurrentImageIndex((prevIndex) => {
                 const nextIndex = (prevIndex + 1) % images.length;
@@ -63,10 +63,10 @@ const Outcome: React.FC<OutcomeProps> = ({ message, images }) => {
                 }
                 return nextIndex;
             });
-        }, 3000); // 3초마다 이미지 변경
+        }, intervalTime); // intervalTime에 따라 슬라이드 변경
 
         return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 클리어
-    }, [images, navigate, sliderEnded]); // images, navigate, sliderEnded에 의존
+    }, [images, sliderEnded]); // images, navigate, sliderEnded에 의존
 
     const getCurrentPosition = () => {
         if(images.length === 0) return 0
