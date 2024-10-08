@@ -677,7 +677,7 @@ textarea:focus, input:focus{
 
 .introModalBox{
   display: flex;
-  width: calc(100% - 640px);
+  width: 52%;
   height: calc(100% - 280px);
   padding: 60px 117px;
   flex-direction: column;

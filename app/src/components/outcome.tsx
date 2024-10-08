@@ -46,7 +46,7 @@ const Outcome: React.FC<OutcomeProps> = ({ message, images }) => {
             // 이미지가 없을 때 3초 후 검정 화면 숨기기
             const timeout = setTimeout(() => {
                 navigate(0);
-            }, 3000); // 3초 후
+            }, 10000); // 3초 후
 
             return () => clearTimeout(timeout); // 컴포넌트 언마운트 시 타이머 클리어
         }
