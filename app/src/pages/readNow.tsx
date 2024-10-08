@@ -6,7 +6,7 @@ import ReadCard from "../components/readCard";
 import {Helmet} from "react-helmet-async";
 import {useRecoilValue} from "recoil";
 import {answersAtom} from "../atoms";
-import Slider from "react-slick";
+import Slider, {LazyLoadTypes} from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Outcome from "../components/outcome";
