@@ -22,5 +22,6 @@ code {
 }
 .slick-track {
   display: flex !important; /* 슬라이드 트랙을 flexbox로 설정 */
-  align-items: center; /* 수직 중앙 정렬 */
+  align-items: flex-start !important; /* 수직 중앙 정렬 */
+  margin-top: 40px !important;
 }
