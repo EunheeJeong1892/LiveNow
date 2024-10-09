@@ -130,12 +130,16 @@ function Library() {
                     <p className={styles.noContent}>아직 등록되지 않은 단어입니다.<br/>아래의 + 버튼을 눌러 처음으로 단어를 등록해보세요!</p>)}
                 </div>
                 {!inputText && filteredWords.length < words.length && ( // 더보기 버튼 조건부 렌더링
-                    <button onClick={loadMoreWords} className={styles.loadMoreButton}>
-                        더보기
-                    </button>
-                )}
-            </div>
-            <div onClick={openModal} className={styles.floatAddBtn}>
+                <div onClick={loadMoreWords} className={styles.loadMoreButton}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <line y1="11" x2="24" y2="11" stroke="#999999" strokeWidth="2"/>
+                        <line x1="13" y1="-4.37114e-08" x2="13" y2="24" stroke="#999999" strokeWidth="2"/>
+                    </svg>
+                    더보기
+                </div>
+            )}
+        </div>
+    <div onClick={openModal} className={styles.floatAddBtn}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
                     <line y1="17" x2="36" y2="17" stroke="black" strokeWidth="2"/>
                     <line x1="19" y1="4.37114e-08" x2="19" y2="36" stroke="black" strokeWidth="2"/>

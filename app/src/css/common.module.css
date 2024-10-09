@@ -416,6 +416,21 @@
   width: 300px;
   border-radius: 3px;
 }
+.loadMoreButton{
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+
+  color: #999;
+  font-size: 26px;
+  font-weight: 350;
+  letter-spacing: -0.78px;
+
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 80px;
+  cursor: pointer;
+}
 .floatAddBtn{
   display: flex;
   width: 86px;
